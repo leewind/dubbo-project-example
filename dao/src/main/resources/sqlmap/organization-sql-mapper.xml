@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.milkt.onelab.organization.dao.OrganizationDao">
+
+<resultMap id="organizationDOResult" type="io.milkt.onelab.organization.domain.OrganizationDO">
+    <result column="name" property="name"/>
+    <result column="address_id" property="addressId"/>
+    <result column="attachment_credential_url" property="attachmentCredentialUrl"/>
+    <result column="verify_status" property="verifyStatus"/>
+    <result column="id" property="id"/>
+    <result column="gmt_create" property="gmtCreate"/>
+    <result column="gmt_modified" property="gmtModified"/>
+</resultMap>
+
+<sql id="organizationDO_columns">
+    name,
+    address_id,
+    attachment_credential_url,
+    verify_status,
+    id,
+    gmt_create,
+    gmt_modified
+</sql>
+
+<sql id="organizationDO_sqlForInsert">
+    name,
+    address_id,
+    attachment_credential_url,
+    verify_status,
+    id,
+    gmt_create,
+    gmt_modified
+</sql>
+
+<sql id="organizationDO_columnsForInsert">
+    #{name},
+    #{addressId},
+    #{attachmentCredentialUrl},
+    #{verifyStatus},
+    #{id},
+    now(),
+    now()
+</sql>
+
+<sql id="organizationDO_setterForUpdate">
+    <set>
+        gmt_modified = now(),
+        <if test="name != null">
+            name = #{name},
+        </if>
+        <if test="addressId != null">
+            address_id = #{addressId},
+        </if>
+        <if test="attachmentCredentialUrl != null">
+            attachment_credential_url = #{attachmentCredentialUrl},
+        </if>
+        <if test="verifyStatus != null">
+            verify_status = #{verifyStatus},
+        </if>
+    </set>
+</sql>
+
+<sql id="organizationDO_selector">
+    select
+    <include refid="organizationDO_columns"/>
+    from address
+</sql>
+
+<sql id="organizationDO_query_segment">
+    <trim prefix="WHERE" prefixOverrides="AND|OR">
+        <if test="data.name != null">
+            AND name = #{data.name}
+        </if>
+        <if test="data.addressId != null">
+            AND address_id = #{data.addressId}
+        </if>
+        <if test="data.attachmentCredentialUrl != null">
+            AND attachment_credential_url = #{data.attachmentCredentialUrl}
+        </if>
+        <if test="data.verifyStatus != null">
+            AND verify_status = #{data.verifyStatus}
+        </if>
+        <if test="data.id != null">
+            AND id = #{data.id}
+        </if>
+        <if test="data.gmtCreate != null">
+            AND gmt_create = #{data.gmtCreate}
+        </if>
+        <if test="data.gmtModified != null">
+            AND gmt_modified = #{data.gmtModified}
+        </if>
+        <if test="ins != null">
+            AND
+            <foreach collection="ins" item="item" open="(" separator="and" close=")">
+                ${item.column} in
+                <foreach collection="item.values" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </foreach>
+        </if>
+        <if test="notIns != null">
+            AND
+            <foreach collection="notIns" item="item" open="(" separator="and" close=")">
+                ${item.column} not in
+                <foreach collection="item.values" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </foreach>
+        </if>
+        <if test="equals != null and equals != ''">
+            AND
+            <foreach collection="equals" item="item" open="(" separator="and" close=")">
+                ${item.column} = #{item.value}
+            </foreach>
+        </if>
+        <if test="notEquals != null and notEquals != ''">
+            AND
+            <foreach collection="notEquals" item="item" open="(" separator="and" close=")">
+                ${item.column} = #{item.value}
+            </foreach>
+        </if>
+        <if test="lts != null">
+            AND
+            <foreach collection="lts" item="item" open="(" separator="and" close=")">
+                ${item.column} <![CDATA[ < ]]> #{item.value}
+            </foreach>
+        </if>
+        <if test="gts != null">
+            AND
+            <foreach collection="gts" item="item" open="(" separator="and" close=")">
+                ${item.column} <![CDATA[ > ]]> #{item.value}
+            </foreach>
+        </if>
+        <if test="likes != null and likes != ''">
+            AND
+            <foreach collection="likes" item="item" open="(" separator="and" close=")">
+                ${item.column} like concat('%', #{item.value}, '%')
+            </foreach>
+        </if>
+        <if test="ltes != null">
+            AND
+            <foreach collection="ltes" item="item" open="(" separator="and" close=")">
+                ${item.column} <![CDATA[ <= ]]> #{item.value}
+            </foreach>
+        </if>
+        <if test="gtes != null">
+            AND
+            <foreach collection="gtes" item="item" open="(" separator="and" close=")">
+                ${item.column} <![CDATA[ >= ]]> #{item.value}
+            </foreach>
+        </if>
+        <if test="ranges != null">
+            AND
+            <foreach collection="ranges" item="item" open="(" separator="and" close=")">
+                ${item.column} <![CDATA[ >= ]]> #{item.from} and ${item.column} <![CDATA[ < ]]> #{item.to}
+            </foreach>
+        </if>
+        AND is_delete = 0
+    </trim>
+</sql>
+
+
+<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="io.milkt.onelab.organization.domain.OrganizationDO">
+    insert into address
+    (
+        <include refid="organizationDO_sqlForInsert"/>
+        ,is_delete
+    )
+    values
+    (
+        <include refid="organizationDO_columnsForInsert"/>
+        ,0
+    )
+</insert>
+
+<update id="update" parameterType="io.milkt.onelab.organization.domain.OrganizationDO">
+    update address
+    <include refid="organizationDO_setterForUpdate" />
+    where id = #{id}
+    and is_delete = 0
+</update>
+
+
+<update id="updateByQuery" parameterType="io.milkt.onelab.organization.domain.OrganizationDO">
+    update address
+    <set>
+        gmt_modified = now(),
+        <if test="update.name != null">
+            name = #{update.name},
+        </if>
+        <if test="update.addressId != null">
+            address_id = #{update.addressId},
+        </if>
+        <if test="update.attachmentCredentialUrl != null">
+            attachment_credential_url = #{update.attachmentCredentialUrl},
+        </if>
+        <if test="update.verifyStatus != null">
+            verify_status = #{update.verifyStatus},
+        </if>
+    </set>
+    <include refid="organizationDO_query_segment"/>
+</update>
+
+
+<insert id="insertOrUpdate" useGeneratedKeys="true" keyProperty="id" parameterType="io.milkt.onelab.organization.domain.OrganizationDO">
+    insert into address
+    (
+        <include refid="organizationDO_sqlForInsert"/>
+        ,is_delete
+    )
+    values
+    (
+        <include refid="organizationDO_columnsForInsert"/>
+        ,0
+    )
+    on duplicate key update
+    gmt_modified = now()
+    ,is_delete = 0
+    <if test="name != null">
+        ,name = #{name}
+    </if>
+    <if test="addressId != null">
+        ,address_id = #{addressId}
+    </if>
+    <if test="attachmentCredentialUrl != null">
+        ,attachment_credential_url = #{attachmentCredentialUrl}
+    </if>
+    <if test="verifyStatus != null">
+        ,verify_status = #{verifyStatus}
+    </if>
+</insert>
+
+<!-- Delete -->
+<update id="delete">
+    update address
+    set is_delete = 1, gmt_modified = now()
+    <include refid="organizationDO_query_segment"/>
+</update>
+<update id="deleteById">
+    update address
+    set is_delete = 1, gmt_modified = now()
+    where id = #{id}
+</update>
+
+
+
+
+
+<!-- query class -->
+<sql id="organizationDO_groupBy">
+    <if test="groupBys != null and groupBys != ''">
+        group by
+        <foreach collection="groupBys" item="item" open="" separator="," close="">
+            #{item}
+        </foreach>
+    </if>
+</sql>
+
+<sql id="organizationDO_orderby">
+    <if test="orderBys != null and orderBys != ''">
+        order by
+        <foreach collection="orderBys" item="item" open="" separator="," close="">
+            ${item.column} ${item.direction}
+        </foreach>
+    </if>
+</sql>
+
+
+<select id="query" resultMap="organizationDOResult" parameterType="io.milkt.onelab.organization.domain.OrganizationDO">
+    <include refid="organizationDO_selector"/>
+    <include refid="organizationDO_query_segment"/>
+    <include refid="organizationDO_groupBy"/>
+    <include refid="organizationDO_orderby"/>
+</select>
+
+<select id="query4Page" resultMap="organizationDOResult" parameterType="io.milkt.onelab.organization.domain.OrganizationDO">
+    <include refid="organizationDO_selector"/>
+    <include refid="organizationDO_query_segment"/>
+    <include refid="organizationDO_groupBy"/>
+    <include refid="organizationDO_orderby"/>
+    limit ${startRowForMysql}, ${pageSize}
+</select>
+
+
+<select id="count" resultType="java.lang.Long">
+    SELECT COUNT(1) FROM address
+    <include refid="organizationDO_query_segment"/>
+</select>
+
+<select id="getById" resultMap="organizationDOResult">
+    <include refid="organizationDO_selector"/>
+    where id = #{id}
+    and is_delete = 0
+</select>
+
+<select id="getByIdForUpdate" resultMap="organizationDOResult">
+    <include refid="organizationDO_selector"/>
+    where id = #{id}
+    and is_delete = 0
+    for update
+</select>
+
+</mapper>

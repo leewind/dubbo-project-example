@@ -17,14 +17,6 @@
       <artifactId>api-util</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.milkt.1lab</groupId>
-      <artifactId>organization-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.milkt.1lab</groupId>
-      <artifactId>organization-dao</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>dubbo</artifactId>
     </dependency>
