@@ -1,0 +1,7 @@
+net.pocrd.demo.datasource.url=${milkt.onelab.organization.db.url}
+net.pocrd.demo.datasource.username=${milkt.onelab.organization.db.username}
+net.pocrd.demo.datasource.password=${milkt.onelab.organization.db.password}
+net.pocrd.demo.log.home=${milkt.onelab.organization.log.home}
+dubbo.registry.url=${milkt.dubbo.registry.url}
+dubbo.export.timeout=${milkt.onelab.organization.dubbo.export.timeout}
+dubbo.reference.version=${milkt.onelab.organization.dubbo.reference.version}

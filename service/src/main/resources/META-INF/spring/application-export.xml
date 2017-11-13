@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd"
+  default-lazy-init="true">
+  <context:annotation-config/>
+  <context:property-placeholder file-encoding="UTF-8" ignore-resource-not-found="true"
+    location="classpath:config.properties"/>
+  <bean id="regionHttpExportServiceImpl" class="io.milkt.onelab.organization.service.http.RegionHttpExportServiceImpl" />
+
+  <bean id="dubboApplicationConfig" class="com.alibaba.dubbo.config.ApplicationConfig">
+    <property name="name" value="company"/>
+  </bean>
+
+  <bean id="dubboRegistryConfig" class="com.alibaba.dubbo.config.RegistryConfig">
+    <property name="address" value="${dubbo.registry.url}"/>
+  </bean>
+
+  <bean id="dubboProtocolConfig" class="com.alibaba.dubbo.config.ProtocolConfig">
+    <property name="port" value="-1"/>
+  </bean>
+
+  <bean id="regionHttpExportServiceRegister" class="com.alibaba.dubbo.config.spring.ServiceBean">
+    <property name="interface" value="io.milkt.hyzj.company.api.RegionHttpExportService"/>
+    <property name="ref" ref="regionHttpExportServiceImpl"/>
+    <property name="application" ref="dubboApplicationConfig"/>
+    <property name="registry" ref="dubboRegistryConfig"/>
+    <property name="protocol" ref="dubboProtocolConfig"/>
+    <property name="version" value="${dubbo.reference.version}"/>
+    <property name="timeout" value="${dubbo.export.timeout}"/>
+  </bean>
+
+</beans>
