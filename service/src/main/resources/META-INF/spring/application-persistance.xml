@@ -52,13 +52,13 @@
         </property>
     </bean>
 
-    <bean id="regionDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
-        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
-        <property name="mapperInterface" value="io.milkt.onelab.organization.dao.RegionDao"/>
-    </bean>
-
     <bean id="organizationDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
         <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
         <property name="mapperInterface" value="io.milkt.onelab.organization.dao.OrganizationDao"/>
+    </bean>
+
+    <bean id="regionDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+        <property name="mapperInterface" value="io.milkt.onelab.organization.dao.RegionDao"/>
     </bean>
 </beans>
