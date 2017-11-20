@@ -21,6 +21,6 @@ public class RegionManager extends BaseManager<RegionDO> {
 
   public static void main(String[] args) {
     DaoHelper.genXMLWithFeature("/Users/leewind/Projects/milkt/milkt-1lab-service-organization/dao/src/main/resources/sqlmap/region-sql-mapper.xml",
-        RegionDao.class, RegionDO.class, "address");
+        RegionDao.class, RegionDO.class, "region");
   }
 }

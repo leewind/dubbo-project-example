@@ -43,7 +43,7 @@ public class RegionHttpExportServiceImpl implements RegionHttpExportService {
     entity.citycode = regionDO.getCitycode();
     entity.latitude = regionDO.getLatitude();
     entity.longitude = regionDO.getLongitude();
-    entity.level = RegionLevelEnum.valueOf(regionDO.getLevel());
+    entity.level = RegionLevelEnum.valueOf(regionDO.getLevel().toUpperCase());
     entity.name = regionDO.getName();
     entity.parentAdcode = regionDO.getParent();
     entity.pinyin = regionDO.getPinyin();

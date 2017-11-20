@@ -5,7 +5,7 @@ then
   exit 1
 fi
 #这里写自己服务的名字
-SERVICE_NAME="company-service"
+SERVICE_NAME="organization-service"
 PID_FILE="../$SERVICE_NAME.pid"
 BASE_DIR=$(dirname $0)
 LIB_DIR=$BASE_DIR/lib
