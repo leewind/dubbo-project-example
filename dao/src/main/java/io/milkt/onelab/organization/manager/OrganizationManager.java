@@ -21,6 +21,6 @@ public class OrganizationManager extends BaseManager<OrganizationDO> {
 
   public static void main(String[] args) {
     DaoHelper.genXMLWithFeature("/Users/leewind/Projects/milkt/milkt-1lab-service-organization/dao/src/main/resources/sqlmap/organization-sql-mapper.xml",
-        OrganizationDao.class, OrganizationDO.class, "address");
+        OrganizationDao.class, OrganizationDO.class, "organization");
   }
 }

@@ -31,6 +31,11 @@ public class OrganizationDO extends BaseDO {
    */
   private Long userId;
 
+  /**
+   * 注册路径
+   */
+  private String channel;
+
   public String getName() {
     return name;
   }
@@ -69,5 +74,14 @@ public class OrganizationDO extends BaseDO {
 
   public void setUserId(Long userId) {
     this.userId = userId;
+  }
+
+
+  public String getChannel() {
+    return channel;
+  }
+
+  public void setChannel(String channel) {
+    this.channel = channel;
   }
 }

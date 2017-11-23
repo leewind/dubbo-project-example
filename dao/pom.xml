@@ -25,6 +25,11 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.milkt.1lab</groupId>
+      <artifactId>organization-api</artifactId>
+      <version>0.1.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>organization-dao</finalName>

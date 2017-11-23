@@ -38,5 +38,7 @@
   <mappers>
     <mapper resource="sqlmap/organization-sql-mapper.xml" />
     <mapper resource="sqlmap/region-sql-mapper.xml" />
+    <mapper resource="sqlmap/address-sql-mapper.xml" />
+    <mapper resource="sqlmap/lab-sql-mapper.xml" />
   </mappers>
 </configuration>

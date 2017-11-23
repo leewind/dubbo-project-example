@@ -1,104 +1,94 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="io.milkt.onelab.organization.dao.OrganizationDao">
+<mapper namespace="io.milkt.onelab.organization.dao.LabDao">
 
-<resultMap id="organizationDOResult" type="io.milkt.onelab.organization.domain.OrganizationDO">
+<resultMap id="labDOResult" type="io.milkt.onelab.organization.domain.LabDO">
     <result column="name" property="name"/>
-    <result column="channel" property="channel"/>
-    <result column="verify_status" property="verifyStatus"/>
-    <result column="attachment_credential_url" property="attachmentCredentialUrl"/>
-    <result column="user_id" property="userId"/>
+    <result column="type" property="type"/>
+    <result column="organization_id" property="organizationId"/>
     <result column="address_id" property="addressId"/>
+    <result column="phone" property="phone"/>
     <result column="id" property="id"/>
     <result column="gmt_create" property="gmtCreate"/>
     <result column="gmt_modified" property="gmtModified"/>
 </resultMap>
 
-<sql id="organizationDO_columns">
+<sql id="labDO_columns">
     name,
-    channel,
-    verify_status,
-    attachment_credential_url,
-    user_id,
+    type,
+    organization_id,
     address_id,
+    phone,
     id,
     gmt_create,
     gmt_modified
 </sql>
 
-<sql id="organizationDO_sqlForInsert">
+<sql id="labDO_sqlForInsert">
     name,
-    channel,
-    verify_status,
-    attachment_credential_url,
-    user_id,
+    type,
+    organization_id,
     address_id,
+    phone,
     id,
     gmt_create,
     gmt_modified
 </sql>
 
-<sql id="organizationDO_columnsForInsert">
+<sql id="labDO_columnsForInsert">
     #{name},
-    #{channel},
-    #{verifyStatus},
-    #{attachmentCredentialUrl},
-    #{userId},
+    #{type},
+    #{organizationId},
     #{addressId},
+    #{phone},
     #{id},
     now(),
     now()
 </sql>
 
-<sql id="organizationDO_setterForUpdate">
+<sql id="labDO_setterForUpdate">
     <set>
         gmt_modified = now(),
         <if test="name != null">
             name = #{name},
         </if>
-        <if test="channel != null">
-            channel = #{channel},
+        <if test="type != null">
+            type = #{type},
         </if>
-        <if test="verifyStatus != null">
-            verify_status = #{verifyStatus},
-        </if>
-        <if test="attachmentCredentialUrl != null">
-            attachment_credential_url = #{attachmentCredentialUrl},
-        </if>
-        <if test="userId != null">
-            user_id = #{userId},
+        <if test="organizationId != null">
+            organization_id = #{organizationId},
         </if>
         <if test="addressId != null">
             address_id = #{addressId},
         </if>
+        <if test="phone != null">
+            phone = #{phone},
+        </if>
     </set>
 </sql>
 
-<sql id="organizationDO_selector">
+<sql id="labDO_selector">
     select
-    <include refid="organizationDO_columns"/>
-    from organization
+    <include refid="labDO_columns"/>
+    from lab
 </sql>
 
-<sql id="organizationDO_query_segment">
+<sql id="labDO_query_segment">
     <trim prefix="WHERE" prefixOverrides="AND|OR">
         <if test="data.name != null">
             AND name = #{data.name}
         </if>
-        <if test="data.channel != null">
-            AND channel = #{data.channel}
+        <if test="data.type != null">
+            AND type = #{data.type}
         </if>
-        <if test="data.verifyStatus != null">
-            AND verify_status = #{data.verifyStatus}
-        </if>
-        <if test="data.attachmentCredentialUrl != null">
-            AND attachment_credential_url = #{data.attachmentCredentialUrl}
-        </if>
-        <if test="data.userId != null">
-            AND user_id = #{data.userId}
+        <if test="data.organizationId != null">
+            AND organization_id = #{data.organizationId}
         </if>
         <if test="data.addressId != null">
             AND address_id = #{data.addressId}
+        </if>
+        <if test="data.phone != null">
+            AND phone = #{data.phone}
         </if>
         <if test="data.id != null">
             AND id = #{data.id}
@@ -180,63 +170,60 @@
 </sql>
 
 
-<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="io.milkt.onelab.organization.domain.OrganizationDO">
-    insert into organization
+<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="io.milkt.onelab.organization.domain.LabDO">
+    insert into lab
     (
-        <include refid="organizationDO_sqlForInsert"/>
+        <include refid="labDO_sqlForInsert"/>
         ,is_delete
     )
     values
     (
-        <include refid="organizationDO_columnsForInsert"/>
+        <include refid="labDO_columnsForInsert"/>
         ,0
     )
 </insert>
 
-<update id="update" parameterType="io.milkt.onelab.organization.domain.OrganizationDO">
-    update organization
-    <include refid="organizationDO_setterForUpdate" />
+<update id="update" parameterType="io.milkt.onelab.organization.domain.LabDO">
+    update lab
+    <include refid="labDO_setterForUpdate" />
     where id = #{id}
     and is_delete = 0
 </update>
 
 
-<update id="updateByQuery" parameterType="io.milkt.onelab.organization.domain.OrganizationDO">
-    update organization
+<update id="updateByQuery" parameterType="io.milkt.onelab.organization.domain.LabDO">
+    update lab
     <set>
         gmt_modified = now(),
         <if test="update.name != null">
             name = #{update.name},
         </if>
-        <if test="update.channel != null">
-            channel = #{update.channel},
+        <if test="update.type != null">
+            type = #{update.type},
         </if>
-        <if test="update.verifyStatus != null">
-            verify_status = #{update.verifyStatus},
-        </if>
-        <if test="update.attachmentCredentialUrl != null">
-            attachment_credential_url = #{update.attachmentCredentialUrl},
-        </if>
-        <if test="update.userId != null">
-            user_id = #{update.userId},
+        <if test="update.organizationId != null">
+            organization_id = #{update.organizationId},
         </if>
         <if test="update.addressId != null">
             address_id = #{update.addressId},
         </if>
+        <if test="update.phone != null">
+            phone = #{update.phone},
+        </if>
     </set>
-    <include refid="organizationDO_query_segment"/>
+    <include refid="labDO_query_segment"/>
 </update>
 
 
-<insert id="insertOrUpdate" useGeneratedKeys="true" keyProperty="id" parameterType="io.milkt.onelab.organization.domain.OrganizationDO">
-    insert into organization
+<insert id="insertOrUpdate" useGeneratedKeys="true" keyProperty="id" parameterType="io.milkt.onelab.organization.domain.LabDO">
+    insert into lab
     (
-        <include refid="organizationDO_sqlForInsert"/>
+        <include refid="labDO_sqlForInsert"/>
         ,is_delete
     )
     values
     (
-        <include refid="organizationDO_columnsForInsert"/>
+        <include refid="labDO_columnsForInsert"/>
         ,0
     )
     on duplicate key update
@@ -245,31 +232,28 @@
     <if test="name != null">
         ,name = #{name}
     </if>
-    <if test="channel != null">
-        ,channel = #{channel}
+    <if test="type != null">
+        ,type = #{type}
     </if>
-    <if test="verifyStatus != null">
-        ,verify_status = #{verifyStatus}
-    </if>
-    <if test="attachmentCredentialUrl != null">
-        ,attachment_credential_url = #{attachmentCredentialUrl}
-    </if>
-    <if test="userId != null">
-        ,user_id = #{userId}
+    <if test="organizationId != null">
+        ,organization_id = #{organizationId}
     </if>
     <if test="addressId != null">
         ,address_id = #{addressId}
+    </if>
+    <if test="phone != null">
+        ,phone = #{phone}
     </if>
 </insert>
 
 <!-- Delete -->
 <update id="delete">
-    update organization
+    update lab
     set is_delete = 1, gmt_modified = now()
-    <include refid="organizationDO_query_segment"/>
+    <include refid="labDO_query_segment"/>
 </update>
 <update id="deleteById">
-    update organization
+    update lab
     set is_delete = 1, gmt_modified = now()
     where id = #{id}
 </update>
@@ -279,7 +263,7 @@
 
 
 <!-- query class -->
-<sql id="organizationDO_groupBy">
+<sql id="labDO_groupBy">
     <if test="groupBys != null and groupBys != ''">
         group by
         <foreach collection="groupBys" item="item" open="" separator="," close="">
@@ -288,7 +272,7 @@
     </if>
 </sql>
 
-<sql id="organizationDO_orderby">
+<sql id="labDO_orderby">
     <if test="orderBys != null and orderBys != ''">
         order by
         <foreach collection="orderBys" item="item" open="" separator="," close="">
@@ -298,35 +282,35 @@
 </sql>
 
 
-<select id="query" resultMap="organizationDOResult" parameterType="io.milkt.onelab.organization.domain.OrganizationDO">
-    <include refid="organizationDO_selector"/>
-    <include refid="organizationDO_query_segment"/>
-    <include refid="organizationDO_groupBy"/>
-    <include refid="organizationDO_orderby"/>
+<select id="query" resultMap="labDOResult" parameterType="io.milkt.onelab.organization.domain.LabDO">
+    <include refid="labDO_selector"/>
+    <include refid="labDO_query_segment"/>
+    <include refid="labDO_groupBy"/>
+    <include refid="labDO_orderby"/>
 </select>
 
-<select id="query4Page" resultMap="organizationDOResult" parameterType="io.milkt.onelab.organization.domain.OrganizationDO">
-    <include refid="organizationDO_selector"/>
-    <include refid="organizationDO_query_segment"/>
-    <include refid="organizationDO_groupBy"/>
-    <include refid="organizationDO_orderby"/>
+<select id="query4Page" resultMap="labDOResult" parameterType="io.milkt.onelab.organization.domain.LabDO">
+    <include refid="labDO_selector"/>
+    <include refid="labDO_query_segment"/>
+    <include refid="labDO_groupBy"/>
+    <include refid="labDO_orderby"/>
     limit ${startRowForMysql}, ${pageSize}
 </select>
 
 
 <select id="count" resultType="java.lang.Long">
-    SELECT COUNT(1) FROM organization
-    <include refid="organizationDO_query_segment"/>
+    SELECT COUNT(1) FROM lab
+    <include refid="labDO_query_segment"/>
 </select>
 
-<select id="getById" resultMap="organizationDOResult">
-    <include refid="organizationDO_selector"/>
+<select id="getById" resultMap="labDOResult">
+    <include refid="labDO_selector"/>
     where id = #{id}
     and is_delete = 0
 </select>
 
-<select id="getByIdForUpdate" resultMap="organizationDOResult">
-    <include refid="organizationDO_selector"/>
+<select id="getByIdForUpdate" resultMap="labDOResult">
+    <include refid="labDO_selector"/>
     where id = #{id}
     and is_delete = 0
     for update

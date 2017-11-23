@@ -61,4 +61,14 @@
         <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
         <property name="mapperInterface" value="io.milkt.onelab.organization.dao.RegionDao"/>
     </bean>
+
+    <bean id="addressDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+        <property name="mapperInterface" value="io.milkt.onelab.organization.dao.AddressDao"/>
+    </bean>
+
+    <bean id="labDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+        <property name="mapperInterface" value="io.milkt.onelab.organization.dao.LabDao"/>
+    </bean>
 </beans>

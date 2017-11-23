@@ -2,6 +2,12 @@ package io.milkt.onelab.organization.enums;
 
 import net.pocrd.annotation.Description;
 
+/**
+ * 认证状态
+ *
+ * @author leewind (leewind19841209@gmail.com)
+ * @version v0.1 2017.11.23 10:00
+ */
 @Description("认证状态")
 public enum VerifyStatus {
   @Description("初始状态")
