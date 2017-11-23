@@ -5,8 +5,9 @@
 <resultMap id="organizationDOResult" type="io.milkt.onelab.organization.domain.OrganizationDO">
     <result column="name" property="name"/>
     <result column="address_id" property="addressId"/>
-    <result column="attachment_credential_url" property="attachmentCredentialUrl"/>
     <result column="verify_status" property="verifyStatus"/>
+    <result column="attachment_credential_url" property="attachmentCredentialUrl"/>
+    <result column="user_id" property="userId"/>
     <result column="id" property="id"/>
     <result column="gmt_create" property="gmtCreate"/>
     <result column="gmt_modified" property="gmtModified"/>
@@ -15,8 +16,9 @@
 <sql id="organizationDO_columns">
     name,
     address_id,
-    attachment_credential_url,
     verify_status,
+    attachment_credential_url,
+    user_id,
     id,
     gmt_create,
     gmt_modified
@@ -25,8 +27,9 @@
 <sql id="organizationDO_sqlForInsert">
     name,
     address_id,
-    attachment_credential_url,
     verify_status,
+    attachment_credential_url,
+    user_id,
     id,
     gmt_create,
     gmt_modified
@@ -35,8 +38,9 @@
 <sql id="organizationDO_columnsForInsert">
     #{name},
     #{addressId},
-    #{attachmentCredentialUrl},
     #{verifyStatus},
+    #{attachmentCredentialUrl},
+    #{userId},
     #{id},
     now(),
     now()
@@ -51,11 +55,14 @@
         <if test="addressId != null">
             address_id = #{addressId},
         </if>
+        <if test="verifyStatus != null">
+            verify_status = #{verifyStatus},
+        </if>
         <if test="attachmentCredentialUrl != null">
             attachment_credential_url = #{attachmentCredentialUrl},
         </if>
-        <if test="verifyStatus != null">
-            verify_status = #{verifyStatus},
+        <if test="userId != null">
+            user_id = #{userId},
         </if>
     </set>
 </sql>
@@ -74,11 +81,14 @@
         <if test="data.addressId != null">
             AND address_id = #{data.addressId}
         </if>
+        <if test="data.verifyStatus != null">
+            AND verify_status = #{data.verifyStatus}
+        </if>
         <if test="data.attachmentCredentialUrl != null">
             AND attachment_credential_url = #{data.attachmentCredentialUrl}
         </if>
-        <if test="data.verifyStatus != null">
-            AND verify_status = #{data.verifyStatus}
+        <if test="data.userId != null">
+            AND user_id = #{data.userId}
         </if>
         <if test="data.id != null">
             AND id = #{data.id}
@@ -191,11 +201,14 @@
         <if test="update.addressId != null">
             address_id = #{update.addressId},
         </if>
+        <if test="update.verifyStatus != null">
+            verify_status = #{update.verifyStatus},
+        </if>
         <if test="update.attachmentCredentialUrl != null">
             attachment_credential_url = #{update.attachmentCredentialUrl},
         </if>
-        <if test="update.verifyStatus != null">
-            verify_status = #{update.verifyStatus},
+        <if test="update.userId != null">
+            user_id = #{update.userId},
         </if>
     </set>
     <include refid="organizationDO_query_segment"/>
@@ -222,11 +235,14 @@
     <if test="addressId != null">
         ,address_id = #{addressId}
     </if>
+    <if test="verifyStatus != null">
+        ,verify_status = #{verifyStatus}
+    </if>
     <if test="attachmentCredentialUrl != null">
         ,attachment_credential_url = #{attachmentCredentialUrl}
     </if>
-    <if test="verifyStatus != null">
-        ,verify_status = #{verifyStatus}
+    <if test="userId != null">
+        ,user_id = #{userId}
     </if>
 </insert>
 

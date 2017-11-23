@@ -13,4 +13,9 @@ public class OrganizationErrorCode extends AbstractReturnCode {
   public OrganizationErrorCode(String desc, int code) {
     super(desc, code);
   }
+
+  public final static int _C_ORGANIZATION_VERIFY_SUCCESS = 6000010;
+  public final static AbstractReturnCode ORGANIZATION_VERIFY_SUCCESS = new OrganizationErrorCode
+      ("origanization已经审核通过不能再进行修改", _C_ORGANIZATION_VERIFY_SUCCESS);
+
 }

@@ -26,6 +26,11 @@ public class OrganizationDO extends BaseDO {
    */
   private String verifyStatus;
 
+  /**
+   * 用户Id
+   */
+  private Long userId;
+
   public String getName() {
     return name;
   }
@@ -56,5 +61,13 @@ public class OrganizationDO extends BaseDO {
 
   public void setVerifyStatus(String verifyStatus) {
     this.verifyStatus = verifyStatus;
+  }
+
+  public Long getUserId() {
+    return userId;
+  }
+
+  public void setUserId(Long userId) {
+    this.userId = userId;
   }
 }
