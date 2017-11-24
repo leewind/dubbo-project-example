@@ -13,6 +13,12 @@ import net.pocrd.annotation.HttpApi;
 import net.pocrd.define.AutowireableParameter;
 import net.pocrd.define.SecurityType;
 
+/**
+ * lab对外暴露的http接口集合
+ *
+ * @author leewind (leewind19841209@gmail.com)
+ * @version v0.1 2017.11.24
+ */
 @ApiGroup(name = "lab", minCode = 5000000, maxCode = 6000000, codeDefine = LabErrorCode.class, owner = "leewind")
 public interface LabHttpExportService {
 

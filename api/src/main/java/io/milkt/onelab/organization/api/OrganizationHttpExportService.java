@@ -10,6 +10,12 @@ import net.pocrd.annotation.HttpApi;
 import net.pocrd.define.AutowireableParameter;
 import net.pocrd.define.SecurityType;
 
+/**
+ * organization对外暴露的http接口
+ *
+ * @author leewind (leewind19841209@gmail.com)
+ * @version v0.1 2017.11.24 18:32
+ */
 @ApiGroup(name = "organization", minCode = 6000000, maxCode = 7000000, codeDefine = OrganizationErrorCode.class, owner = "leewind")
 public interface OrganizationHttpExportService {
 

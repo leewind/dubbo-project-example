@@ -1,2 +1,2 @@
-Api-Export: io.milkt.onelab.organization.api.RegionHttpExportService io.milkt.onelab.organization.api.OrganizationHttpExportService io.milkt.onelab.organization.api.LabHttpExportService
+Api-Export: io.milkt.onelab.organization.api.RegionHttpExportService io.milkt.onelab.organization.api.OrganizationHttpExportService io.milkt.onelab.organization.api.LabHttpExportService io.milkt.onelab.organization.api.RequirementHttpExportService
 Api-Dependency-Type: dubbo

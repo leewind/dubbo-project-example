@@ -11,6 +11,7 @@
   <bean id="regionHttpExportServiceImpl" class="io.milkt.onelab.organization.service.http.RegionHttpExportServiceImpl" />
   <bean id="organizationExportServiceImpl" class="io.milkt.onelab.organization.service.http.OrganizationHttpExportServiceImpl" />
   <bean id="labHttpExportServiceImpl" class="io.milkt.onelab.organization.service.http.LabHttpExportServiceImpl" />
+  <bean id="requirementHttpExportServiceImpl" class="io.milkt.onelab.organization.service.http.RequirementHttpExportServiceImpl" />
 
   <bean id="dubboApplicationConfig" class="com.alibaba.dubbo.config.ApplicationConfig">
     <property name="name" value="company"/>
@@ -54,4 +55,13 @@
     <property name="timeout" value="${dubbo.export.timeout}"/>
   </bean>
 
+  <bean id="requirementHttpExportServiceRegister" class="com.alibaba.dubbo.config.spring.ServiceBean">
+    <property name="interface" value="io.milkt.onelab.organization.api.RequirementHttpExportService"/>
+    <property name="ref" ref="requirementHttpExportServiceImpl"/>
+    <property name="application" ref="dubboApplicationConfig"/>
+    <property name="registry" ref="dubboRegistryConfig"/>
+    <property name="protocol" ref="dubboProtocolConfig"/>
+    <property name="version" value="${dubbo.reference.version}"/>
+    <property name="timeout" value="${dubbo.export.timeout}"/>
+  </bean>
 </beans>
