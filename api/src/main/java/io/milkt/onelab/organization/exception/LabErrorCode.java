@@ -29,4 +29,12 @@ public class LabErrorCode extends AbstractReturnCode {
   public final static int _C_LAB_CREATE_ERROR = 5000040;
   public final static AbstractReturnCode LAB_CREATE_ERROR = new LabErrorCode
       ("lab创建失败", _C_LAB_CREATE_ERROR);
+
+  public final static int _C_LAB_NOT_EXIST = 5000050;
+  public final static AbstractReturnCode LAB_NOT_EXIST = new LabErrorCode
+      ("lab不存在", _C_LAB_NOT_EXIST);
+
+  public final static int _C_LAB_NOT_PERMISSION = 5000060;
+  public final static AbstractReturnCode LAB_NOT_PERMISSION = new LabErrorCode
+      ("lab操作没有权限", _C_LAB_NOT_PERMISSION);
 }

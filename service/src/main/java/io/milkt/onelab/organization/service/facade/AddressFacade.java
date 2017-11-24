@@ -1,9 +1,11 @@
 package io.milkt.onelab.organization.service.facade;
 
 import io.milkt.onelab.organization.domain.AddressDO;
+import io.milkt.onelab.organization.entity.AddressEntity;
 import io.milkt.onelab.organization.entity.AddressInsertEntity;
 import io.milkt.onelab.organization.manager.AddressManager;
 import javax.annotation.Resource;
+import net.pocrd.entity.ServiceRuntimeException;
 import org.springframework.dao.DataIntegrityViolationException;
 
 public class AddressFacade {
@@ -29,7 +31,21 @@ public class AddressFacade {
 
     // @todo 需要引入amap服务对地址求坐标和geohash
 
-    addressManager.insert(addressDO);
+    addressManager.insertOrUpdate(addressDO);
     return addressDO.getId();
+  }
+
+  public AddressEntity buildAddressEntity(AddressDO addressDO) {
+    AddressEntity addressEntity = new AddressEntity();
+
+    addressEntity.provinceAdcode = addressDO.getProvinceAdcode();
+    addressEntity.provinceName = addressDO.getProvinceName();
+    addressEntity.cityAdcode = addressDO.getCityAdcode();
+    addressEntity.cityName = addressDO.getCityName();
+    addressEntity.districtAdcode = addressDO.getDistrictAdcode();
+    addressEntity.districtName = addressDO.getDistrictName();
+    addressEntity.detailAddress = addressDO.getDetailAddress();
+
+    return addressEntity;
   }
 }
