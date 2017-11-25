@@ -1,8 +1,11 @@
 package io.milkt.onelab.organization.api;
 
 
+import io.milkt.onelab.organization.entity.PageQueryEntity;
+import io.milkt.onelab.organization.entity.RequirementSearchResult;
 import io.milkt.onelab.organization.enums.FeeRangeEnum;
 import io.milkt.onelab.organization.enums.RecruitTimeLimitEnum;
+import io.milkt.onelab.organization.enums.RequirementStatus;
 import io.milkt.onelab.organization.enums.RequirementType;
 import io.milkt.onelab.organization.enums.TaskFinishLimitEnum;
 import io.milkt.onelab.organization.exception.RequirementErrorCode;
@@ -25,16 +28,35 @@ import net.pocrd.define.SecurityType;
 public interface RequirementHttpExportService {
 
   @HttpApi(name = "requirement.save", desc = "保存requirement返回id", security = SecurityType.UserLogin, owner = "leewind")
-  @DesignedErrorCode({})
+  @DesignedErrorCode({
+      RequirementErrorCode._C_ORGANIZATION_TYPE_ERROR,
+      RequirementErrorCode._C_ORGANIZAION_NOT_EXIST,
+      RequirementErrorCode._C_LAB_NOT_EXIST,
+      RequirementErrorCode._C_LAB_NOT_PERMISSION,
+      RequirementErrorCode._C_REQUIREMENT_CREATE_ERROR
+  })
   public long save(
       @ApiAutowired(AutowireableParameter.appid) int appid,
       @ApiAutowired(AutowireableParameter.userid) long userId,
       @ApiParameter(required = true, name = "labId", desc = "实验室id") long labId,
       @ApiParameter(required = true, name = "type", desc = "任务类型") RequirementType type,
-      @ApiParameter(required = false, name = "description", desc = "任务描述") String description,
+      @ApiParameter(required = true, name = "description", desc = "任务描述") String description,
       @ApiParameter(required = true, name = "recruitTimeLimit", desc = "招募时间限制")RecruitTimeLimitEnum recruitTimeLimit,
       @ApiParameter(required = true, name = "feeRange", desc = "招募时间限制")FeeRangeEnum feeRange,
       @ApiParameter(required = true, name = "taskFinishLimit", desc = "任务完成期限")TaskFinishLimitEnum taskFinishLimit,
       @ApiParameter(required = false, name = "images", desc = "图片")List<String> images
+  );
+
+
+  @HttpApi(name = "requirement.getMyList", desc = "获取我的需求列表", security = SecurityType.UserLogin, owner = "leewind")
+  @DesignedErrorCode({
+      RequirementErrorCode._C_ORGANIZATION_TYPE_ERROR,
+      RequirementErrorCode._C_ORGANIZAION_NOT_EXIST
+  })
+  public RequirementSearchResult getMyList(
+      @ApiAutowired(AutowireableParameter.appid) int appid,
+      @ApiAutowired(AutowireableParameter.userid) long userId,
+      @ApiParameter(required = false, name = "status", desc = "需求状态") RequirementStatus status,
+      @ApiParameter(required = true, name = "page", desc = "页码查询实体")PageQueryEntity page
   );
 }
