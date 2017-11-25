@@ -15,7 +15,9 @@
     <result column="fee" property="fee"/>
     <result column="status" property="status"/>
     <result column="images" property="images"/>
-    <result column="accepted" property="accepted"/>
+    <result column="accepted_user_id" property="acceptedUserId"/>
+    <result column="accepted_motion_id" property="acceptedMotionId"/>
+    <result column="task_finish_time" property="taskFinishTime"/>
     <result column="id" property="id"/>
     <result column="gmt_create" property="gmtCreate"/>
     <result column="gmt_modified" property="gmtModified"/>
@@ -34,7 +36,9 @@
     fee,
     status,
     images,
-    accepted,
+    accepted_user_id,
+    accepted_motion_id,
+    task_finish_time,
     id,
     gmt_create,
     gmt_modified
@@ -53,7 +57,9 @@
     fee,
     status,
     images,
-    accepted,
+    accepted_user_id,
+    accepted_motion_id,
+    task_finish_time,
     id,
     gmt_create,
     gmt_modified
@@ -72,7 +78,9 @@
     #{fee},
     #{status},
     #{images},
-    #{accepted},
+    #{acceptedUserId},
+    #{acceptedMotionId},
+    #{taskFinishTime},
     #{id},
     now(),
     now()
@@ -117,8 +125,14 @@
         <if test="images != null">
             images = #{images},
         </if>
-        <if test="accepted != null">
-            accepted = #{accepted},
+        <if test="acceptedUserId != null">
+            accepted_user_id = #{acceptedUserId},
+        </if>
+        <if test="acceptedMotionId != null">
+            accepted_motion_id = #{acceptedMotionId},
+        </if>
+        <if test="taskFinishTime != null">
+            task_finish_time = #{taskFinishTime},
         </if>
     </set>
 </sql>
@@ -167,8 +181,14 @@
         <if test="data.images != null">
             AND images = #{data.images}
         </if>
-        <if test="data.accepted != null">
-            AND accepted = #{data.accepted}
+        <if test="data.acceptedUserId != null">
+            AND accepted_user_id = #{data.acceptedUserId}
+        </if>
+        <if test="data.acceptedMotionId != null">
+            AND accepted_motion_id = #{data.acceptedMotionId}
+        </if>
+        <if test="data.taskFinishTime != null">
+            AND task_finish_time = #{data.taskFinishTime}
         </if>
         <if test="data.id != null">
             AND id = #{data.id}
@@ -311,8 +331,14 @@
         <if test="update.images != null">
             images = #{update.images},
         </if>
-        <if test="update.accepted != null">
-            accepted = #{update.accepted},
+        <if test="update.acceptedUserId != null">
+            accepted_user_id = #{update.acceptedUserId},
+        </if>
+        <if test="update.acceptedMotionId != null">
+            accepted_motion_id = #{update.acceptedMotionId},
+        </if>
+        <if test="update.taskFinishTime != null">
+            task_finish_time = #{update.taskFinishTime},
         </if>
     </set>
     <include refid="requirementDO_query_segment"/>
@@ -369,8 +395,14 @@
     <if test="images != null">
         ,images = #{images}
     </if>
-    <if test="accepted != null">
-        ,accepted = #{accepted}
+    <if test="acceptedUserId != null">
+        ,accepted_user_id = #{acceptedUserId}
+    </if>
+    <if test="acceptedMotionId != null">
+        ,accepted_motion_id = #{acceptedMotionId}
+    </if>
+    <if test="taskFinishTime != null">
+        ,task_finish_time = #{taskFinishTime}
     </if>
 </insert>
 

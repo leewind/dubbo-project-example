@@ -31,10 +31,10 @@ public interface RequirementHttpExportService {
       @ApiAutowired(AutowireableParameter.userid) long userId,
       @ApiParameter(required = true, name = "labId", desc = "实验室id") long labId,
       @ApiParameter(required = true, name = "type", desc = "任务类型") RequirementType type,
-      @ApiParameter(required = true, name = "description", desc = "任务描述") String description,
+      @ApiParameter(required = false, name = "description", desc = "任务描述") String description,
       @ApiParameter(required = true, name = "recruitTimeLimit", desc = "招募时间限制")RecruitTimeLimitEnum recruitTimeLimit,
       @ApiParameter(required = true, name = "feeRange", desc = "招募时间限制")FeeRangeEnum feeRange,
       @ApiParameter(required = true, name = "taskFinishLimit", desc = "任务完成期限")TaskFinishLimitEnum taskFinishLimit,
-      @ApiParameter(required = true, name = "images", desc = "图片")List<String> images
+      @ApiParameter(required = false, name = "images", desc = "图片")List<String> images
   );
 }

@@ -70,7 +70,17 @@ public class RequirementDO extends BaseDO {
   /**
    * 采用人
    */
-  private Long accepted;
+  private Long acceptedUserId;
+
+  /**
+   * 被采用的维修报价id
+   */
+  private Long acceptedMotionId;
+
+  /**
+   * 任务完成时间
+   */
+  private Timestamp taskFinishTime;
 
   public String getType() {
     return type;
@@ -168,11 +178,27 @@ public class RequirementDO extends BaseDO {
     this.images = images;
   }
 
-  public Long getAccepted() {
-    return accepted;
+  public Long getAcceptedUserId() {
+    return acceptedUserId;
   }
 
-  public void setAccepted(Long accepted) {
-    this.accepted = accepted;
+  public void setAcceptedUserId(Long acceptedUserId) {
+    this.acceptedUserId = acceptedUserId;
+  }
+
+  public Long getAcceptedMotionId() {
+    return acceptedMotionId;
+  }
+
+  public void setAcceptedMotionId(Long acceptedMotionId) {
+    this.acceptedMotionId = acceptedMotionId;
+  }
+
+  public Timestamp getTaskFinishTime() {
+    return taskFinishTime;
+  }
+
+  public void setTaskFinishTime(Timestamp taskFinishTime) {
+    this.taskFinishTime = taskFinishTime;
   }
 }
