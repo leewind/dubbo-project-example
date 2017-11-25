@@ -11,6 +11,7 @@ import io.milkt.onelab.organization.entity.AddressInsertEntity;
 import io.milkt.onelab.organization.entity.LabEntity;
 import io.milkt.onelab.organization.enums.AppType;
 import io.milkt.onelab.organization.enums.LabType;
+import io.milkt.onelab.organization.enums.VerifyStatus;
 import io.milkt.onelab.organization.exception.LabErrorCode;
 import io.milkt.onelab.organization.manager.AddressManager;
 import io.milkt.onelab.organization.manager.LabManager;
@@ -123,6 +124,8 @@ public class LabHttpExportServiceImpl implements LabHttpExportService {
         labEntity.phone = lab.getPhone();
         labEntity.organizationId = lab.getOrganizationId();
         labEntity.type = LabType.valueOf(lab.getType());
+        labEntity.level = lab.getLevel();
+        labEntity.verifyStatus = VerifyStatus.valueOf(organizationDO.getVerifyStatus());
 
         AddressDO addressDO = addressManager.getById(lab.getAddressId());
         if (addressDO == null){

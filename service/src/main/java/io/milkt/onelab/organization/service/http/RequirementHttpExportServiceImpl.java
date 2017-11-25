@@ -158,6 +158,7 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
       BaseQuery<RequirementDO> conditions = BaseQuery.getInstance(factor);
       conditions.setCurrentPage(page.pageNum);
       conditions.setPageSize(page.pageSize);
+      conditions.addOrderBy("published_time", 0);
 
       PageResult<RequirementDO> pageResult = requirementManager.query4Page(conditions);
 
@@ -178,5 +179,39 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
 
       return requirementSearchResult;
     }
+  }
+
+  @Override
+  public RequirementSearchResult getList(int appid, long userId, RequirementType type,
+      PageQueryEntity page) {
+
+      RequirementDO factor = new RequirementDO();
+      if(type != null){
+        factor.setType(type.name());
+      }
+
+      BaseQuery<RequirementDO> conditions = BaseQuery.getInstance(factor);
+      conditions.setCurrentPage(page.pageNum);
+      conditions.setPageSize(page.pageSize);
+      conditions.addOrderBy("published_time", 0);
+
+      PageResult<RequirementDO> pageResult = requirementManager.query4Page(conditions);
+
+      RequirementSearchResult requirementSearchResult = new RequirementSearchResult();
+      requirementSearchResult.list = new ArrayList<RequirementEntity>();
+
+      for (RequirementDO requirementDO : pageResult.getResult()) {
+        requirementSearchResult.list.add(buildRequirementEntity(requirementDO));
+      }
+
+      PageEntity pageEntity = new PageEntity();
+      pageEntity.cucrrentNum = pageResult.getCurrentPage() * pageResult.getPageSize() < pageResult.getTotalItem()? pageResult.getTotalItem() : pageResult.getCurrentPage() * pageResult.getPageSize();
+      pageEntity.pageSize = pageResult.getPageSize();
+      pageEntity.totalNum = pageResult.getTotalItem();
+      pageEntity.pageNum = pageResult.getCurrentPage();
+
+      requirementSearchResult.page = pageEntity;
+
+      return requirementSearchResult;
   }
 }

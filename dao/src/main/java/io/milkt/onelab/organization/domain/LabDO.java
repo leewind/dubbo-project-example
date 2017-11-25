@@ -31,6 +31,11 @@ public class LabDO extends BaseDO {
    */
   private Long organizationId;
 
+  /**
+   * 评价等级
+   */
+  private Integer level;
+
   public String getName() {
     return name;
   }
@@ -69,5 +74,13 @@ public class LabDO extends BaseDO {
 
   public void setOrganizationId(Long organizationId) {
     this.organizationId = organizationId;
+  }
+
+  public Integer getLevel() {
+    return level;
+  }
+
+  public void setLevel(Integer level) {
+    this.level = level;
   }
 }

@@ -2,6 +2,7 @@ package io.milkt.onelab.organization.api;
 
 
 import io.milkt.onelab.organization.entity.PageQueryEntity;
+import io.milkt.onelab.organization.entity.RequirementDetailEntity;
 import io.milkt.onelab.organization.entity.RequirementSearchResult;
 import io.milkt.onelab.organization.enums.FeeRangeEnum;
 import io.milkt.onelab.organization.enums.RecruitTimeLimitEnum;
@@ -58,5 +59,22 @@ public interface RequirementHttpExportService {
       @ApiAutowired(AutowireableParameter.userid) long userId,
       @ApiParameter(required = false, name = "status", desc = "需求状态") RequirementStatus status,
       @ApiParameter(required = true, name = "page", desc = "页码查询实体")PageQueryEntity page
+  );
+
+  @HttpApi(name = "requirement.getList", desc = "获取需求列表", security = SecurityType.None, owner = "leewind")
+  @DesignedErrorCode({})
+  public RequirementSearchResult getList(
+      @ApiAutowired(AutowireableParameter.appid) int appid,
+      @ApiAutowired(AutowireableParameter.userid) long userId,
+      @ApiParameter(required = false, name = "type", desc = "需求类别") RequirementType type,
+      @ApiParameter(required = true, name = "page", desc = "页码查询实体")PageQueryEntity page
+  );
+
+  @HttpApi(name = "requirement.getDetail", desc = "获取需求详情", security = SecurityType.None, owner = "leewind")
+  @DesignedErrorCode({})
+  public RequirementDetailEntity getDetail(
+      @ApiAutowired(AutowireableParameter.appid) int appid,
+      @ApiAutowired(AutowireableParameter.userid) long userId,
+      @ApiParameter(required = false, name = "requirementId", desc = "需求id") long requirementId
   );
 }

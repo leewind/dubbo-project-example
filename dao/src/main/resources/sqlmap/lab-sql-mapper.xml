@@ -5,9 +5,10 @@
 <resultMap id="labDOResult" type="io.milkt.onelab.organization.domain.LabDO">
     <result column="name" property="name"/>
     <result column="type" property="type"/>
-    <result column="organization_id" property="organizationId"/>
     <result column="address_id" property="addressId"/>
     <result column="phone" property="phone"/>
+    <result column="organization_id" property="organizationId"/>
+    <result column="level" property="level"/>
     <result column="id" property="id"/>
     <result column="gmt_create" property="gmtCreate"/>
     <result column="gmt_modified" property="gmtModified"/>
@@ -16,9 +17,10 @@
 <sql id="labDO_columns">
     name,
     type,
-    organization_id,
     address_id,
     phone,
+    organization_id,
+    level,
     id,
     gmt_create,
     gmt_modified
@@ -27,9 +29,10 @@
 <sql id="labDO_sqlForInsert">
     name,
     type,
-    organization_id,
     address_id,
     phone,
+    organization_id,
+    level,
     id,
     gmt_create,
     gmt_modified
@@ -38,9 +41,10 @@
 <sql id="labDO_columnsForInsert">
     #{name},
     #{type},
-    #{organizationId},
     #{addressId},
     #{phone},
+    #{organizationId},
+    #{level},
     #{id},
     now(),
     now()
@@ -55,14 +59,17 @@
         <if test="type != null">
             type = #{type},
         </if>
-        <if test="organizationId != null">
-            organization_id = #{organizationId},
-        </if>
         <if test="addressId != null">
             address_id = #{addressId},
         </if>
         <if test="phone != null">
             phone = #{phone},
+        </if>
+        <if test="organizationId != null">
+            organization_id = #{organizationId},
+        </if>
+        <if test="level != null">
+            level = #{level},
         </if>
     </set>
 </sql>
@@ -81,14 +88,17 @@
         <if test="data.type != null">
             AND type = #{data.type}
         </if>
-        <if test="data.organizationId != null">
-            AND organization_id = #{data.organizationId}
-        </if>
         <if test="data.addressId != null">
             AND address_id = #{data.addressId}
         </if>
         <if test="data.phone != null">
             AND phone = #{data.phone}
+        </if>
+        <if test="data.organizationId != null">
+            AND organization_id = #{data.organizationId}
+        </if>
+        <if test="data.level != null">
+            AND level = #{data.level}
         </if>
         <if test="data.id != null">
             AND id = #{data.id}
@@ -201,14 +211,17 @@
         <if test="update.type != null">
             type = #{update.type},
         </if>
-        <if test="update.organizationId != null">
-            organization_id = #{update.organizationId},
-        </if>
         <if test="update.addressId != null">
             address_id = #{update.addressId},
         </if>
         <if test="update.phone != null">
             phone = #{update.phone},
+        </if>
+        <if test="update.organizationId != null">
+            organization_id = #{update.organizationId},
+        </if>
+        <if test="update.level != null">
+            level = #{update.level},
         </if>
     </set>
     <include refid="labDO_query_segment"/>
@@ -235,14 +248,17 @@
     <if test="type != null">
         ,type = #{type}
     </if>
-    <if test="organizationId != null">
-        ,organization_id = #{organizationId}
-    </if>
     <if test="addressId != null">
         ,address_id = #{addressId}
     </if>
     <if test="phone != null">
         ,phone = #{phone}
+    </if>
+    <if test="organizationId != null">
+        ,organization_id = #{organizationId}
+    </if>
+    <if test="level != null">
+        ,level = #{level}
     </if>
 </insert>
 

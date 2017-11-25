@@ -1,6 +1,7 @@
 package io.milkt.onelab.organization.entity;
 
 import io.milkt.onelab.organization.enums.LabType;
+import io.milkt.onelab.organization.enums.VerifyStatus;
 import java.io.Serializable;
 import net.pocrd.annotation.Description;
 
@@ -32,4 +33,10 @@ public class LabEntity implements Serializable {
 
   @Description("联系电话")
   public String phone;
+
+  @Description("评级")
+  public int level;
+
+  @Description("企业认证状态")
+  public VerifyStatus verifyStatus;
 }
