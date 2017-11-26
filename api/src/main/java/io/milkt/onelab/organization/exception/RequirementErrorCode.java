@@ -27,4 +27,20 @@ public class RequirementErrorCode extends AbstractReturnCode {
   public final static int _C_REQUIREMENT_CREATE_ERROR = 8000050;
   public final static AbstractReturnCode REQUIREMENT_CREATE_ERROR = new OrganizationErrorCode
       ("任务创建失败", _C_REQUIREMENT_CREATE_ERROR);
+
+  public final static int _C_REQUIREMENT_NOT_EXIST = 8000060;
+  public final static AbstractReturnCode REQUIREMENT_NOT_EXIST = new OrganizationErrorCode
+      ("需求不存在", _C_REQUIREMENT_NOT_EXIST);
+
+  public final static int _C_ADDRESS_NOT_EXIST = 8000070;
+  public final static AbstractReturnCode ADDRESS_NOT_EXIST = new OrganizationErrorCode
+      ("地址不存在", _C_ADDRESS_NOT_EXIST);
+
+  public final static int _C_MOTION_NOT_PERMISSION = 8000080;
+  public final static AbstractReturnCode MOTION_NOT_PERMISSION = new OrganizationErrorCode
+      ("需求已关闭，不接受竞价", _C_MOTION_NOT_PERMISSION);
+
+  public final static int _C_NOT_REPECT_MOTION = 8000090;
+  public final static AbstractReturnCode NOT_REPECT_MOTION = new OrganizationErrorCode
+      ("不能重复竞价", _C_NOT_REPECT_MOTION);
 }

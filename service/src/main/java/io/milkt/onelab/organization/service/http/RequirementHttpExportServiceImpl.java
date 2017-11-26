@@ -6,26 +6,36 @@ import com.sfebiz.common.dao.domain.PageResult;
 import io.milkt.onelab.organization.api.RequirementHttpExportService;
 import io.milkt.onelab.organization.domain.AddressDO;
 import io.milkt.onelab.organization.domain.LabDO;
+import io.milkt.onelab.organization.domain.MotionDO;
 import io.milkt.onelab.organization.domain.OrganizationDO;
 import io.milkt.onelab.organization.domain.RequirementDO;
+import io.milkt.onelab.organization.entity.LabEntity;
 import io.milkt.onelab.organization.entity.PageEntity;
 import io.milkt.onelab.organization.entity.PageQueryEntity;
+import io.milkt.onelab.organization.entity.RequirementDetailEntity;
 import io.milkt.onelab.organization.entity.RequirementEntity;
 import io.milkt.onelab.organization.entity.RequirementSearchResult;
 import io.milkt.onelab.organization.enums.AppType;
 import io.milkt.onelab.organization.enums.FeeRangeEnum;
+import io.milkt.onelab.organization.enums.LabType;
+import io.milkt.onelab.organization.enums.MotionStatus;
 import io.milkt.onelab.organization.enums.RecruitTimeLimitEnum;
 import io.milkt.onelab.organization.enums.RequirementStatus;
 import io.milkt.onelab.organization.enums.RequirementType;
 import io.milkt.onelab.organization.enums.TaskFinishLimitEnum;
+import io.milkt.onelab.organization.enums.VerifyStatus;
+import io.milkt.onelab.organization.exception.LabErrorCode;
+import io.milkt.onelab.organization.exception.OrganizationErrorCode;
 import io.milkt.onelab.organization.exception.RequirementErrorCode;
 import io.milkt.onelab.organization.manager.AddressManager;
 import io.milkt.onelab.organization.manager.LabManager;
+import io.milkt.onelab.organization.manager.MotionManager;
 import io.milkt.onelab.organization.manager.OrganizationManager;
 import io.milkt.onelab.organization.manager.RequirementManager;
 import io.milkt.onelab.organization.service.facade.AddressFacade;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Resource;
 import net.pocrd.entity.ServiceRuntimeException;
@@ -45,6 +55,9 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
 
   @Resource
   private LabManager labManager;
+
+  @Resource
+  private MotionManager motionManager;
 
   @Autowired
   private AddressFacade addressFacade;
@@ -182,8 +195,7 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
   }
 
   @Override
-  public RequirementSearchResult getList(int appid, long userId, RequirementType type,
-      PageQueryEntity page) {
+  public RequirementSearchResult getList(RequirementType type, PageQueryEntity page) {
 
       RequirementDO factor = new RequirementDO();
       if(type != null){
@@ -213,5 +225,98 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
       requirementSearchResult.page = pageEntity;
 
       return requirementSearchResult;
+  }
+
+  @Override
+  public RequirementDetailEntity getDetail(long requirementId) {
+    RequirementDO requirementDO = requirementManager.getById(requirementId);
+
+    if (requirementDO == null) {
+      throw new ServiceRuntimeException(RequirementErrorCode.REQUIREMENT_NOT_EXIST, "需求单不存在");
+    }else{
+
+      RequirementDetailEntity requirement = new RequirementDetailEntity();
+      requirement.description = requirementDO.getDescription();
+      requirement.feeRange = FeeRangeEnum.valueOf(requirementDO.getFeeRange());
+      requirement.recruitFinishTime = requirementDO.getRecruitFinishTime().getTime();
+      requirement.type = RequirementType.valueOf(requirementDO.getType());
+      requirement.requirementId = requirementDO.getId();
+      if(requirementDO.getImages() != null) {
+        requirement.images = Arrays.asList(StringUtils.split(requirementDO.getImages(), ';'));
+      }
+
+      LabDO lab = labManager.getById(requirementDO.getLabId());
+      if (lab  == null){
+        throw new ServiceRuntimeException(RequirementErrorCode.LAB_NOT_EXIST, "实验室不存在");
+      }
+
+      LabEntity labEntity = new LabEntity();
+      labEntity.labId = lab.getId();
+      labEntity.name = lab.getName();
+      labEntity.phone = lab.getPhone();
+      labEntity.organizationId = lab.getOrganizationId();
+      labEntity.type = LabType.valueOf(lab.getType());
+      labEntity.level = lab.getLevel();
+
+      OrganizationDO organizationDO = organizationManager.getById(lab.getOrganizationId());
+      if (organizationDO == null){
+        throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZAION_NOT_EXIST, "组织不存在");
+      }
+      labEntity.verifyStatus = VerifyStatus.valueOf(organizationDO.getVerifyStatus());
+
+      AddressDO addressDO = addressManager.getById(lab.getAddressId());
+      if (addressDO == null){
+        throw new ServiceRuntimeException(RequirementErrorCode.ADDRESS_NOT_EXIST, "地址不存在");
+      } else {
+        labEntity.address = addressFacade.buildAddressEntity(addressDO);
+      }
+      requirement.lab = labEntity;
+
+      MotionDO factor = new MotionDO();
+      factor.setRequirementId(requirementId);
+      BaseQuery<MotionDO> conditions = BaseQuery.getInstance(factor);
+      requirement.motionCount = motionManager.count(conditions);
+
+      return requirement;
+    }
+  }
+
+  @Override
+  public long apply(int appid, long userId, long requirementId, String mobile, int expectedFee, String description) {
+    RequirementDO requirementDO = requirementManager.getById(requirementId);
+    if(requirementDO == null) {
+      throw new ServiceRuntimeException(RequirementErrorCode.REQUIREMENT_NOT_EXIST, "需求不存在");
+    }else if(requirementDO.getRecruitFinishTime().getTime() < System.currentTimeMillis() ||
+        RequirementStatus.valueOf(requirementDO.getStatus()) == RequirementStatus.CLOSE ||
+        RequirementStatus.valueOf(requirementDO.getStatus()) == RequirementStatus.FINISHED){
+      throw new ServiceRuntimeException(RequirementErrorCode.MOTION_NOT_PERMISSION, "需求已关闭，不接受竞价");
+    }
+
+    AppType channel = AppType.getEnumByCode(appid);
+    if (channel == null || channel == AppType.PUBLISHER) {
+      throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZATION_TYPE_ERROR, "apptype不在接受的范围内");
+    }
+
+    MotionDO factor = new MotionDO();
+    factor.setUserId(userId);
+    factor.setRequirementId(requirementId);
+
+    BaseQuery<MotionDO> conditions = BaseQuery.getInstance(factor);
+    long result = motionManager.count(conditions);
+    if (result > 0){
+      throw new ServiceRuntimeException(RequirementErrorCode.NOT_REPECT_MOTION, "不能重复竞价");
+    }
+
+    MotionDO motionDO = new MotionDO();
+    motionDO.setDescription(description);
+    motionDO.setExpectedFee(expectedFee);
+    motionDO.setMobile(mobile);
+    motionDO.setRequirementId(requirementId);
+    motionDO.setMotionTime(new Timestamp(System.currentTimeMillis()));
+    motionDO.setStatus(MotionStatus.APPLY.name());
+    motionDO.setUserId(userId);
+
+    motionManager.insert(motionDO);
+    return motionDO.getId();
   }
 }

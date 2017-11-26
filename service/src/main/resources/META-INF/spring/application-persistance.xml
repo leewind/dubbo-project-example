@@ -76,4 +76,9 @@
         <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
         <property name="mapperInterface" value="io.milkt.onelab.organization.dao.RequirementDao"/>
     </bean>
+
+    <bean id="motionDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+        <property name="mapperInterface" value="io.milkt.onelab.organization.dao.MotionDao"/>
+    </bean>
 </beans>

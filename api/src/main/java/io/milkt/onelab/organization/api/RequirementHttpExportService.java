@@ -48,7 +48,6 @@ public interface RequirementHttpExportService {
       @ApiParameter(required = false, name = "images", desc = "图片")List<String> images
   );
 
-
   @HttpApi(name = "requirement.getMyList", desc = "获取我的需求列表", security = SecurityType.UserLogin, owner = "leewind")
   @DesignedErrorCode({
       RequirementErrorCode._C_ORGANIZATION_TYPE_ERROR,
@@ -64,8 +63,6 @@ public interface RequirementHttpExportService {
   @HttpApi(name = "requirement.getList", desc = "获取需求列表", security = SecurityType.None, owner = "leewind")
   @DesignedErrorCode({})
   public RequirementSearchResult getList(
-      @ApiAutowired(AutowireableParameter.appid) int appid,
-      @ApiAutowired(AutowireableParameter.userid) long userId,
       @ApiParameter(required = false, name = "type", desc = "需求类别") RequirementType type,
       @ApiParameter(required = true, name = "page", desc = "页码查询实体")PageQueryEntity page
   );
@@ -73,8 +70,22 @@ public interface RequirementHttpExportService {
   @HttpApi(name = "requirement.getDetail", desc = "获取需求详情", security = SecurityType.None, owner = "leewind")
   @DesignedErrorCode({})
   public RequirementDetailEntity getDetail(
+      @ApiParameter(required = false, name = "requirementId", desc = "需求id") long requirementId
+  );
+
+  @HttpApi(name = "requirement.apply", desc = "竞标", security = SecurityType.UserLogin, owner = "leewind")
+  @DesignedErrorCode({
+      RequirementErrorCode._C_REQUIREMENT_NOT_EXIST,
+      RequirementErrorCode._C_ORGANIZATION_TYPE_ERROR,
+      RequirementErrorCode._C_NOT_REPECT_MOTION,
+      RequirementErrorCode._C_MOTION_NOT_PERMISSION
+  })
+  public long apply(
       @ApiAutowired(AutowireableParameter.appid) int appid,
       @ApiAutowired(AutowireableParameter.userid) long userId,
-      @ApiParameter(required = false, name = "requirementId", desc = "需求id") long requirementId
+      @ApiParameter(required = true, name = "requirementId", desc = "需求id") long requirementId,
+      @ApiParameter(required = true, name = "mobile", desc = "手机号") String mobile,
+      @ApiParameter(required = true, name = "expectedFee", desc = "期望费用")int expectedFee,
+      @ApiParameter(required = false, name = "description", desc = "描述")String description
   );
 }

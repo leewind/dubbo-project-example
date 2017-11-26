@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 import net.pocrd.annotation.Description;
 
+@Description("需求详细实体")
 public class RequirementDetailEntity implements Serializable {
 
   private static final long serialVersionUID = 4784101835427198654L;
@@ -30,4 +31,10 @@ public class RequirementDetailEntity implements Serializable {
 
   @Description("竞标结束时间")
   public long recruitFinishTime;
+
+  @Description("竞标数量")
+  public long motionCount;
+
+  @Description("发布人联系方式")
+  public String mobile;
 }

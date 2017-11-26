@@ -41,5 +41,6 @@
     <mapper resource="sqlmap/address-sql-mapper.xml" />
     <mapper resource="sqlmap/lab-sql-mapper.xml" />
     <mapper resource="sqlmap/requirement-sql-mapper.xml" />
+    <mapper resource="sqlmap/motion-sql-mapper.xml" />
   </mappers>
 </configuration>
