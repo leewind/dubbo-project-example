@@ -24,22 +24,22 @@
         <property name="threads" value="600" />
     </bean>
 
-    <!--<bean id="userServiceConsumer" class="com.alibaba.dubbo.config.spring.ReferenceBean">-->
-        <!--<property name="interface" value="io.milkt.hyzj.user.api.UserService"/>-->
-        <!--<property name="application" ref="dubboApplicationConfig"/>-->
-        <!--<property name="registry" ref="dubboRegistryConfig"/>-->
-        <!--<property name="timeout" value="${dubbo.export.timeout}"/>-->
-        <!--<property name="check" value="false"/>-->
-        <!--<property name="version" value="${dubbo.reference.version}"/>-->
-    <!--</bean>-->
+    <bean id="userLoginHttpService" class="com.alibaba.dubbo.config.spring.ReferenceBean">
+        <property name="interface" value="io.milkt.onelab.user.api.UserLoginHttpService"/>
+        <property name="application" ref="dubboApplicationConfig"/>
+        <property name="registry" ref="dubboRegistryConfig"/>
+        <property name="timeout" value="${dubbo.export.timeout}"/>
+        <property name="check" value="false"/>
+        <property name="version" value="${dubbo.reference.version}"/>
+    </bean>
 
-    <!--<bean id="userHttpServiceConsumer" class="com.alibaba.dubbo.config.spring.ReferenceBean">-->
-        <!--<property name="interface" value="io.milkt.hyzj.user.api.UserHttpService"/>-->
-        <!--<property name="application" ref="dubboApplicationConfig"/>-->
-        <!--<property name="registry" ref="dubboRegistryConfig"/>-->
-        <!--<property name="timeout" value="${dubbo.export.timeout}"/>-->
-        <!--<property name="check" value="false"/>-->
-        <!--<property name="version" value="${dubbo.reference.version}"/>-->
-    <!--</bean>-->
+    <bean id="userHttpService" class="com.alibaba.dubbo.config.spring.ReferenceBean">
+        <property name="interface" value="io.milkt.onelab.user.api.UserHttpService"/>
+        <property name="application" ref="dubboApplicationConfig"/>
+        <property name="registry" ref="dubboRegistryConfig"/>
+        <property name="timeout" value="${dubbo.export.timeout}"/>
+        <property name="check" value="false"/>
+        <property name="version" value="${dubbo.reference.version}"/>
+    </bean>
 
 </beans>

@@ -11,6 +11,9 @@ import net.pocrd.annotation.Description;
 @Description("费用范围枚举")
 public enum FeeRangeEnum {
 
+  @Description("面议")
+  TALK_FACE_TO_FACE,
+
   @Description("500元以内")
   UNDER_FIVE_HUNDRED,
 

@@ -43,4 +43,16 @@ public class RequirementErrorCode extends AbstractReturnCode {
   public final static int _C_NOT_REPECT_MOTION = 8000090;
   public final static AbstractReturnCode NOT_REPECT_MOTION = new OrganizationErrorCode
       ("不能重复竞价", _C_NOT_REPECT_MOTION);
+
+  public final static int _C_PUBLISHER_INFO_ERROR = 8000100;
+  public final static AbstractReturnCode PUBLISHER_INFO_ERROR = new OrganizationErrorCode
+      ("获取发布人信息错误", _C_PUBLISHER_INFO_ERROR);
+
+  public final static int _C_USER_NOT_PERMITTED = 8000110;
+  public final static AbstractReturnCode USER_NOT_PERMITTED = new OrganizationErrorCode
+      ("用户没有审核通过无法申请", _C_USER_NOT_PERMITTED);
+
+  public final static int _C_MOTION_NOT_EXIST = 8000120;
+  public final static AbstractReturnCode MOTION_NOT_EXIST = new OrganizationErrorCode
+      ("竞标不存在", _C_MOTION_NOT_EXIST);
 }

@@ -1,7 +1,7 @@
 package io.milkt.onelab.organization.entity;
 
 import io.milkt.onelab.organization.enums.LabType;
-import io.milkt.onelab.organization.enums.VerifyStatus;
+import io.milkt.onelab.organization.enums.CommonVerifyStatus;
 import java.io.Serializable;
 import net.pocrd.annotation.Description;
 
@@ -38,5 +38,5 @@ public class LabEntity implements Serializable {
   public int level;
 
   @Description("企业认证状态")
-  public VerifyStatus verifyStatus;
+  public CommonVerifyStatus commonVerifyStatus;
 }

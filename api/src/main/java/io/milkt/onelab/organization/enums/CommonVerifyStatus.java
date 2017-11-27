@@ -9,7 +9,7 @@ import net.pocrd.annotation.Description;
  * @version v0.1 2017.11.23 10:00
  */
 @Description("认证状态")
-public enum VerifyStatus {
+public enum CommonVerifyStatus {
   @Description("初始状态")
   INIT,
 

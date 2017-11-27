@@ -63,6 +63,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>io.milkt.onelab</groupId>
+                <artifactId>user-api</artifactId>
+                <version>0.1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
                 <groupId>net.pocrd</groupId>
                 <artifactId>order-api</artifactId>
                 <version>${order_version}</version>

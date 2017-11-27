@@ -139,6 +139,10 @@
       <artifactId>organization-dao</artifactId>
       <version>0.1.0-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>io.milkt.onelab</groupId>
+      <artifactId>user-api</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <finalName>organization-service</finalName>

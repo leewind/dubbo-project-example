@@ -43,7 +43,8 @@ public interface RequirementHttpExportService {
       @ApiParameter(required = true, name = "type", desc = "任务类型") RequirementType type,
       @ApiParameter(required = true, name = "description", desc = "任务描述") String description,
       @ApiParameter(required = true, name = "recruitTimeLimit", desc = "招募时间限制")RecruitTimeLimitEnum recruitTimeLimit,
-      @ApiParameter(required = true, name = "feeRange", desc = "招募时间限制")FeeRangeEnum feeRange,
+//      @ApiParameter(required = true, name = "feeRange", desc = "招募时间限制")FeeRangeEnum feeRange,
+      @ApiParameter(required = true, name = "fee", desc = "预算费用")int fee,
       @ApiParameter(required = true, name = "taskFinishLimit", desc = "任务完成期限")TaskFinishLimitEnum taskFinishLimit,
       @ApiParameter(required = false, name = "images", desc = "图片")List<String> images
   );
@@ -70,6 +71,8 @@ public interface RequirementHttpExportService {
   @HttpApi(name = "requirement.getDetail", desc = "获取需求详情", security = SecurityType.None, owner = "leewind")
   @DesignedErrorCode({})
   public RequirementDetailEntity getDetail(
+      @ApiAutowired(AutowireableParameter.appid) int appid,
+      @ApiAutowired(AutowireableParameter.userid) long userId,
       @ApiParameter(required = false, name = "requirementId", desc = "需求id") long requirementId
   );
 
@@ -78,7 +81,9 @@ public interface RequirementHttpExportService {
       RequirementErrorCode._C_REQUIREMENT_NOT_EXIST,
       RequirementErrorCode._C_ORGANIZATION_TYPE_ERROR,
       RequirementErrorCode._C_NOT_REPECT_MOTION,
-      RequirementErrorCode._C_MOTION_NOT_PERMISSION
+      RequirementErrorCode._C_MOTION_NOT_PERMISSION,
+      RequirementErrorCode._C_PUBLISHER_INFO_ERROR,
+      RequirementErrorCode._C_USER_NOT_PERMITTED
   })
   public long apply(
       @ApiAutowired(AutowireableParameter.appid) int appid,
@@ -87,5 +92,21 @@ public interface RequirementHttpExportService {
       @ApiParameter(required = true, name = "mobile", desc = "手机号") String mobile,
       @ApiParameter(required = true, name = "expectedFee", desc = "期望费用")int expectedFee,
       @ApiParameter(required = false, name = "description", desc = "描述")String description
+  );
+
+  @HttpApi(name = "requirement.approve", desc = "中标", security = SecurityType.UserLogin, owner = "leewind")
+  @DesignedErrorCode({
+      RequirementErrorCode._C_REQUIREMENT_NOT_EXIST,
+      RequirementErrorCode._C_MOTION_NOT_PERMISSION,
+      RequirementErrorCode._C_ORGANIZATION_TYPE_ERROR,
+      RequirementErrorCode._C_ORGANIZAION_NOT_EXIST,
+      RequirementErrorCode._C_USER_NOT_PERMITTED,
+      RequirementErrorCode._C_MOTION_NOT_EXIST
+  })
+  public boolean approve(
+      @ApiAutowired(AutowireableParameter.appid) int appid,
+      @ApiAutowired(AutowireableParameter.userid) long userId,
+      @ApiParameter(required = true, name = "requirementId", desc = "需求id") long requirementId,
+      @ApiParameter(required = true, name = "motionId", desc = "竞标id") long motionId
   );
 }

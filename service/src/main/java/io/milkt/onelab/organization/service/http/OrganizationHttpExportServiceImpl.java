@@ -5,7 +5,7 @@ import io.milkt.onelab.organization.api.OrganizationHttpExportService;
 import io.milkt.onelab.organization.domain.OrganizationDO;
 import io.milkt.onelab.organization.entity.OrganizationEntity;
 import io.milkt.onelab.organization.enums.AppType;
-import io.milkt.onelab.organization.enums.VerifyStatus;
+import io.milkt.onelab.organization.enums.CommonVerifyStatus;
 import io.milkt.onelab.organization.exception.OrganizationErrorCode;
 import io.milkt.onelab.organization.manager.OrganizationManager;
 import io.milkt.onelab.organization.service.facade.OrganizationFacade;
@@ -41,19 +41,19 @@ public class OrganizationHttpExportServiceImpl implements OrganizationHttpExport
       organizationDO.setUserId(userId);
       organizationDO.setName(name);
       organizationDO.setAttachmentCredentialUrl(attachmentCredentialUrl);
-      organizationDO.setVerifyStatus(VerifyStatus.APPLY.name());
+      organizationDO.setVerifyStatus(CommonVerifyStatus.APPLY.name());
       organizationDO.setChannel(AppType.getEnumByCode(appid).name());
 
       organizationManager.insert(organizationDO);
       return organizationDO.getId();
     }else{
       OrganizationDO organizationDO = results.get(0);
-      if (VerifyStatus.valueOf(organizationDO.getVerifyStatus()) == VerifyStatus.SUCCESS) {
+      if (CommonVerifyStatus.valueOf(organizationDO.getVerifyStatus()) == CommonVerifyStatus.SUCCESS) {
         throw new ServiceRuntimeException(OrganizationErrorCode.ORGANIZATION_VERIFY_SUCCESS, "已经认证不能再修改");
       }else{
         organizationDO.setName(name);
         organizationDO.setAttachmentCredentialUrl(attachmentCredentialUrl);
-        organizationDO.setVerifyStatus(VerifyStatus.APPLY.name());
+        organizationDO.setVerifyStatus(CommonVerifyStatus.APPLY.name());
         organizationDO.setChannel(AppType.getEnumByCode(appid).name());
 
         organizationManager.update(organizationDO);
