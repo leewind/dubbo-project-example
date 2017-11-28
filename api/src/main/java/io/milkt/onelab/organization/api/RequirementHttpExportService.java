@@ -5,6 +5,7 @@ import io.milkt.onelab.organization.entity.PageQueryEntity;
 import io.milkt.onelab.organization.entity.RequirementDetailEntity;
 import io.milkt.onelab.organization.entity.RequirementSearchResult;
 import io.milkt.onelab.organization.enums.FeeRangeEnum;
+import io.milkt.onelab.organization.enums.MotionStatus;
 import io.milkt.onelab.organization.enums.RecruitTimeLimitEnum;
 import io.milkt.onelab.organization.enums.RequirementStatus;
 import io.milkt.onelab.organization.enums.RequirementType;
@@ -65,6 +66,15 @@ public interface RequirementHttpExportService {
   @DesignedErrorCode({})
   public RequirementSearchResult getList(
       @ApiParameter(required = false, name = "type", desc = "需求类别") RequirementType type,
+      @ApiParameter(required = true, name = "page", desc = "页码查询实体")PageQueryEntity page
+  );
+
+  @HttpApi(name = "requirement.getListByMotionStatus", desc = "通过用户的motion申请状态来获取需求列表", security = SecurityType.UserLogin, owner = "leewind")
+  @DesignedErrorCode({})
+  public RequirementSearchResult getListByMotionStatus(
+      @ApiAutowired(AutowireableParameter.appid) int appid,
+      @ApiAutowired(AutowireableParameter.userid) long userId,
+      @ApiParameter(required = false, name = "status", desc = "motion状态枚举") MotionStatus status,
       @ApiParameter(required = true, name = "page", desc = "页码查询实体")PageQueryEntity page
   );
 

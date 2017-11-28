@@ -16,13 +16,16 @@ public enum MotionStatus {
   @Description("申请")
   APPLY,
 
-  @Description("被选中")
-  SUCCESS,
+  @Description("执行中")
+  PROCESSING,
 
-  @Description("失败")
+  @Description("未选中")
   FAIL,
 
   @Description("关闭")
   CLOSE,
+
+  @Description("完成")
+  FINISH,
   ;
 }

@@ -19,7 +19,6 @@ import io.milkt.onelab.organization.entity.RequirementDetailEntity;
 import io.milkt.onelab.organization.entity.RequirementEntity;
 import io.milkt.onelab.organization.entity.RequirementSearchResult;
 import io.milkt.onelab.organization.enums.AppType;
-import io.milkt.onelab.organization.enums.FeeRangeEnum;
 import io.milkt.onelab.organization.enums.LabType;
 import io.milkt.onelab.organization.enums.MotionStatus;
 import io.milkt.onelab.organization.enums.RecruitTimeLimitEnum;
@@ -256,6 +255,42 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
   }
 
   @Override
+  public RequirementSearchResult getListByMotionStatus(int appid, long userId, MotionStatus status,
+      PageQueryEntity page) {
+
+    MotionDO factor = new MotionDO();
+    factor.setUserId(userId);
+    if (status != null) {
+      factor.setStatus(status.name());
+    }
+
+    BaseQuery<MotionDO> conditions = BaseQuery.getInstance(factor);
+    conditions.setCurrentPage(page.pageNum);
+    conditions.setPageSize(page.pageSize);
+
+    PageResult<MotionDO> pageResult = motionManager.query4Page(conditions);
+
+    RequirementSearchResult requirementSearchResult = new RequirementSearchResult();
+    requirementSearchResult.list = new ArrayList<RequirementEntity>();
+
+    for (MotionDO motionDO : pageResult.getResult()) {
+      RequirementDO requirementDO = requirementManager.getById(motionDO.getRequirementId());
+      requirementSearchResult.list.add(buildRequirementEntity(requirementDO));
+    }
+
+    PageEntity pageEntity = new PageEntity();
+    pageEntity.cucrrentNum =
+        pageResult.getCurrentPage() * pageResult.getPageSize() < pageResult.getTotalItem()
+            ? pageResult.getTotalItem() : pageResult.getCurrentPage() * pageResult.getPageSize();
+    pageEntity.pageSize = pageResult.getPageSize();
+    pageEntity.totalNum = pageResult.getTotalItem();
+    pageEntity.pageNum = pageResult.getCurrentPage();
+
+    requirementSearchResult.page = pageEntity;
+    return requirementSearchResult;
+  }
+
+  @Override
   public RequirementDetailEntity getDetail(int appid, long userId, long requirementId) {
     RequirementDO requirementDO = requirementManager.getById(requirementId);
 
@@ -458,7 +493,7 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
 
     for(MotionDO motion: motionList) {
       if(motion.getId() == motionId){
-        motion.setStatus(MotionStatus.SUCCESS.name());
+        motion.setStatus(MotionStatus.PROCESSING.name());
       }else{
         motion.setStatus(MotionStatus.FAIL.name());
       }
