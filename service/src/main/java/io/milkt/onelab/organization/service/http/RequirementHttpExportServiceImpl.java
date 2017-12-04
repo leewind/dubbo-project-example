@@ -8,10 +8,13 @@ import com.sfebiz.common.dao.domain.PageResult;
 import io.milkt.onelab.organization.api.RequirementHttpExportService;
 import io.milkt.onelab.organization.domain.AddressDO;
 import io.milkt.onelab.organization.domain.LabDO;
+import io.milkt.onelab.organization.domain.MessageDO;
 import io.milkt.onelab.organization.domain.MotionDO;
 import io.milkt.onelab.organization.domain.OrganizationDO;
 import io.milkt.onelab.organization.domain.RequirementDO;
 import io.milkt.onelab.organization.entity.LabEntity;
+import io.milkt.onelab.organization.entity.MessageEntity;
+import io.milkt.onelab.organization.entity.MessageSearchResult;
 import io.milkt.onelab.organization.entity.MotionEntity;
 import io.milkt.onelab.organization.entity.PageEntity;
 import io.milkt.onelab.organization.entity.PageQueryEntity;
@@ -19,16 +22,18 @@ import io.milkt.onelab.organization.entity.RequirementDetailEntity;
 import io.milkt.onelab.organization.entity.RequirementEntity;
 import io.milkt.onelab.organization.entity.RequirementSearchResult;
 import io.milkt.onelab.organization.enums.AppType;
+import io.milkt.onelab.organization.enums.CommonVerifyStatus;
 import io.milkt.onelab.organization.enums.LabType;
+import io.milkt.onelab.organization.enums.MessageStatus;
 import io.milkt.onelab.organization.enums.MotionStatus;
 import io.milkt.onelab.organization.enums.RecruitTimeLimitEnum;
 import io.milkt.onelab.organization.enums.RequirementStatus;
 import io.milkt.onelab.organization.enums.RequirementType;
 import io.milkt.onelab.organization.enums.TaskFinishLimitEnum;
-import io.milkt.onelab.organization.enums.CommonVerifyStatus;
 import io.milkt.onelab.organization.exception.RequirementErrorCode;
 import io.milkt.onelab.organization.manager.AddressManager;
 import io.milkt.onelab.organization.manager.LabManager;
+import io.milkt.onelab.organization.manager.MessageManager;
 import io.milkt.onelab.organization.manager.MotionManager;
 import io.milkt.onelab.organization.manager.OrganizationManager;
 import io.milkt.onelab.organization.manager.RequirementManager;
@@ -74,6 +79,9 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
 
   @Autowired
   private UserLoginHttpService userLoginHttpService;
+
+  @Resource
+  private MessageManager messageManager;
 
   private static final Logger logger = LoggerFactory
       .getLogger(RequirementHttpExportServiceImpl.class);
@@ -159,7 +167,39 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
       }
 
       try {
+
         requirementManager.insert(requirementDO);
+
+        // @TODO 这里要进行修改，需要用线程异步进行处理
+        MessageDO message4Publisher = new MessageDO();
+        message4Publisher.setTarget(userId);
+        message4Publisher.setStatus(MessageStatus.UNREAD.name());
+        message4Publisher.setTitle("维修招募信息发布");
+        message4Publisher.setSubtitle(description);
+        message4Publisher.setSource("REQUIREMENT");
+        message4Publisher.setPublishTime(new Timestamp(System.currentTimeMillis()));
+        message4Publisher
+            .setContent("您发布了一条维修招募信息\n实验室: " + labDO.getName() + "\n任务描述：" + description + "\"");
+        messageManager.insert(message4Publisher);
+
+        AddressDO addressDO = addressManager.getById(labDO.getAddressId());
+        if (addressDO != null) {
+          List<MessageDO> message2mantainers = messageManager
+              .getUserIdLinkUserDB(String.valueOf(addressDO.getCityAdcode()));
+          for (MessageDO message2mantainer : message2mantainers) {
+            logger.debug("发布成功，向用户发布信息，获取用户id为：" + message2mantainer.getTarget());
+            message2mantainer.setStatus(MessageStatus.UNREAD.name());
+            message2mantainer.setTitle("有实验室发布了维修招募信息");
+            message2mantainer.setSubtitle(description);
+            message2mantainer.setSource("REQUIREMENT");
+            message2mantainer.setPublishTime(new Timestamp(System.currentTimeMillis()));
+            message2mantainer.setContent(
+                labDO.getName() + "发布了一条维修招募信息\n实验室: " + labDO.getName() + "\n任务描述：" + description
+                    + "\"");
+            messageManager.insert(message2mantainer);
+          }
+        }
+
       } catch (DataIntegrityViolationException e) {
         throw new ServiceRuntimeException(RequirementErrorCode.REQUIREMENT_CREATE_ERROR, "任务创建失败",
             e);
@@ -472,6 +512,24 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
     motionDO.setUserId(userId);
 
     motionManager.insert(motionDO);
+
+    try {
+      UserInfo userInfo = userHttpService.getUserInfo(appid, userId);
+
+      MessageDO message4Publisher = new MessageDO();
+      message4Publisher.setTarget(userId);
+      message4Publisher.setStatus(MessageStatus.UNREAD.name());
+      message4Publisher.setTitle("用户" + userInfo.nick + "应聘了您的任务");
+      message4Publisher.setSubtitle(description);
+      message4Publisher.setSource("REQUIREMENT");
+      message4Publisher.setPublishTime(new Timestamp(System.currentTimeMillis()));
+      message4Publisher
+          .setContent("用户" + userInfo.nick + "应聘了您的招募 - " + requirementDO.getDescription());
+      messageManager.insert(message4Publisher);
+    } catch (ServiceException e) {
+      logger.error(e.getMsg());
+    }
+
     return motionDO.getId();
   }
 
@@ -556,5 +614,72 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
     }
 
     return true;
+  }
+
+  private MessageEntity buildMessageEntity(MessageDO messageDO){
+    MessageEntity messageEntity = new MessageEntity();
+
+    messageEntity.content = messageDO.getContent();
+    messageEntity.publishTime = messageDO.getPublishTime().getTime();
+    if (messageDO.getReadTime() != null) {
+      messageEntity.readTime = messageDO.getReadTime().getTime();
+    }
+
+    messageEntity.source = messageDO.getSource();
+    messageEntity.status = MessageStatus.valueOf(messageDO.getStatus());
+    messageEntity.subtitle = messageDO.getSubtitle();
+    messageEntity.target = messageDO.getTarget();
+    messageEntity.title = messageDO.getTitle();
+    messageEntity.id = messageDO.getId();
+    return messageEntity;
+  }
+
+  @Override
+  public MessageSearchResult getMessageList(int appid, long userId, MessageStatus status,
+      PageQueryEntity page) {
+
+    MessageDO factor = new MessageDO();
+    factor.setTarget(userId);
+    if (status != null) {
+      factor.setStatus(status.name());
+    }
+
+    BaseQuery<MessageDO> conditions = BaseQuery.getInstance(factor);
+    conditions.setCurrentPage(page.pageNum);
+    conditions.setPageSize(page.pageSize);
+    conditions.addOrderBy("publish_time", 0);
+
+    PageResult<MessageDO> pageResult = messageManager.query4Page(conditions);
+
+    MessageSearchResult messageSearchResult = new MessageSearchResult();
+    messageSearchResult.list = new ArrayList<MessageEntity>();
+
+    for (MessageDO messageDO : pageResult.getResult()) {
+      messageSearchResult.list.add(buildMessageEntity(messageDO));
+    }
+
+    PageEntity pageEntity = new PageEntity();
+    pageEntity.cucrrentNum =
+        pageResult.getCurrentPage() * pageResult.getPageSize() < pageResult.getTotalItem()
+            ? pageResult.getTotalItem() : pageResult.getCurrentPage() * pageResult.getPageSize();
+    pageEntity.pageSize = pageResult.getPageSize();
+    pageEntity.totalNum = pageResult.getTotalItem();
+    pageEntity.pageNum = pageResult.getCurrentPage();
+
+    messageSearchResult.page = pageEntity;
+
+    return messageSearchResult;
+  }
+
+  @Override
+  public long getUnreadNum(int appid, long userId) {
+
+    MessageDO factor = new MessageDO();
+    factor.setTarget(userId);
+    factor.setStatus(MessageStatus.UNREAD.name());
+
+    BaseQuery<MessageDO> conditions = BaseQuery.getInstance(factor);
+
+    return messageManager.count(conditions);
   }
 }

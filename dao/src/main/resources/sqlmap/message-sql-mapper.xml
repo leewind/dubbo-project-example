@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.milkt.onelab.organization.dao.MessageDao">
+
+  <resultMap id="messageDOResult" type="io.milkt.onelab.organization.domain.MessageDO">
+    <result column="target" property="target"/>
+    <result column="content" property="content"/>
+    <result column="read_time" property="readTime"/>
+    <result column="title" property="title"/>
+    <result column="subtitle" property="subtitle"/>
+    <result column="status" property="status"/>
+    <result column="source" property="source"/>
+    <result column="publish_time" property="publishTime"/>
+    <result column="id" property="id"/>
+    <result column="gmt_create" property="gmtCreate"/>
+    <result column="gmt_modified" property="gmtModified"/>
+  </resultMap>
+
+  <sql id="messageDO_columns">
+    target,
+    content,
+    read_time,
+    title,
+    subtitle,
+    status,
+    source,
+    publish_time,
+    id,
+    gmt_create,
+    gmt_modified
+</sql>
+
+  <sql id="messageDO_sqlForInsert">
+    target,
+    content,
+    read_time,
+    title,
+    subtitle,
+    status,
+    source,
+    publish_time,
+    id,
+    gmt_create,
+    gmt_modified
+</sql>
+
+  <sql id="messageDO_columnsForInsert">
+    #{target},
+    #{content},
+    #{readTime},
+    #{title},
+    #{subtitle},
+    #{status},
+    #{source},
+    #{publishTime},
+    #{id},
+    now(),
+    now()
+</sql>
+
+  <sql id="messageDO_setterForUpdate">
+    <set>
+      gmt_modified = now(),
+      <if test="target != null">
+        target = #{target},
+      </if>
+      <if test="content != null">
+        content = #{content},
+      </if>
+      <if test="readTime != null">
+        read_time = #{readTime},
+      </if>
+      <if test="title != null">
+        title = #{title},
+      </if>
+      <if test="subtitle != null">
+        subtitle = #{subtitle},
+      </if>
+      <if test="status != null">
+        status = #{status},
+      </if>
+      <if test="source != null">
+        source = #{source},
+      </if>
+      <if test="publishTime != null">
+        publish_time = #{publishTime},
+      </if>
+    </set>
+  </sql>
+
+  <sql id="messageDO_selector">
+    select
+    <include refid="messageDO_columns"/>
+    from message
+  </sql>
+
+  <sql id="messageDO_query_segment">
+    <trim prefix="WHERE" prefixOverrides="AND|OR">
+      <if test="data.target != null">
+        AND target = #{data.target}
+      </if>
+      <if test="data.content != null">
+        AND content = #{data.content}
+      </if>
+      <if test="data.readTime != null">
+        AND read_time = #{data.readTime}
+      </if>
+      <if test="data.title != null">
+        AND title = #{data.title}
+      </if>
+      <if test="data.subtitle != null">
+        AND subtitle = #{data.subtitle}
+      </if>
+      <if test="data.status != null">
+        AND status = #{data.status}
+      </if>
+      <if test="data.source != null">
+        AND source = #{data.source}
+      </if>
+      <if test="data.publishTime != null">
+        AND publish_time = #{data.publishTime}
+      </if>
+      <if test="data.id != null">
+        AND id = #{data.id}
+      </if>
+      <if test="data.gmtCreate != null">
+        AND gmt_create = #{data.gmtCreate}
+      </if>
+      <if test="data.gmtModified != null">
+        AND gmt_modified = #{data.gmtModified}
+      </if>
+      <if test="ins != null">
+        AND
+        <foreach collection="ins" item="item" open="(" separator="and" close=")">
+          ${item.column} in
+          <foreach collection="item.values" item="item" open="(" separator="," close=")">
+            #{item}
+          </foreach>
+        </foreach>
+      </if>
+      <if test="notIns != null">
+        AND
+        <foreach collection="notIns" item="item" open="(" separator="and" close=")">
+          ${item.column} not in
+          <foreach collection="item.values" item="item" open="(" separator="," close=")">
+            #{item}
+          </foreach>
+        </foreach>
+      </if>
+      <if test="equals != null and equals != ''">
+        AND
+        <foreach collection="equals" item="item" open="(" separator="and" close=")">
+          ${item.column} = #{item.value}
+        </foreach>
+      </if>
+      <if test="notEquals != null and notEquals != ''">
+        AND
+        <foreach collection="notEquals" item="item" open="(" separator="and" close=")">
+          ${item.column} = #{item.value}
+        </foreach>
+      </if>
+      <if test="lts != null">
+        AND
+        <foreach collection="lts" item="item" open="(" separator="and" close=")">
+          ${item.column} <![CDATA[ < ]]> #{item.value}
+        </foreach>
+      </if>
+      <if test="gts != null">
+        AND
+        <foreach collection="gts" item="item" open="(" separator="and" close=")">
+          ${item.column} <![CDATA[ > ]]> #{item.value}
+        </foreach>
+      </if>
+      <if test="likes != null and likes != ''">
+        AND
+        <foreach collection="likes" item="item" open="(" separator="and" close=")">
+          ${item.column} like concat('%', #{item.value}, '%')
+        </foreach>
+      </if>
+      <if test="ltes != null">
+        AND
+        <foreach collection="ltes" item="item" open="(" separator="and" close=")">
+          ${item.column} <![CDATA[ <= ]]> #{item.value}
+        </foreach>
+      </if>
+      <if test="gtes != null">
+        AND
+        <foreach collection="gtes" item="item" open="(" separator="and" close=")">
+          ${item.column} <![CDATA[ >= ]]> #{item.value}
+        </foreach>
+      </if>
+      <if test="ranges != null">
+        AND
+        <foreach collection="ranges" item="item" open="(" separator="and" close=")">
+          ${item.column} <![CDATA[ >= ]]> #{item.from} and ${item.column} <![CDATA[ < ]]> #{item.to}
+        </foreach>
+      </if>
+      AND is_delete = 0
+    </trim>
+  </sql>
+
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+    parameterType="io.milkt.onelab.organization.domain.MessageDO">
+    insert into message
+    (
+    <include refid="messageDO_sqlForInsert"/>
+    ,is_delete
+    )
+    values
+    (
+    <include refid="messageDO_columnsForInsert"/>
+    ,0
+    )
+  </insert>
+
+  <update id="update" parameterType="io.milkt.onelab.organization.domain.MessageDO">
+    update message
+    <include refid="messageDO_setterForUpdate"/>
+    where id = #{id}
+    and is_delete = 0
+  </update>
+
+
+  <update id="updateByQuery" parameterType="io.milkt.onelab.organization.domain.MessageDO">
+    update message
+    <set>
+      gmt_modified = now(),
+      <if test="update.target != null">
+        target = #{update.target},
+      </if>
+      <if test="update.content != null">
+        content = #{update.content},
+      </if>
+      <if test="update.readTime != null">
+        read_time = #{update.readTime},
+      </if>
+      <if test="update.title != null">
+        title = #{update.title},
+      </if>
+      <if test="update.subtitle != null">
+        subtitle = #{update.subtitle},
+      </if>
+      <if test="update.status != null">
+        status = #{update.status},
+      </if>
+      <if test="update.source != null">
+        source = #{update.source},
+      </if>
+      <if test="update.publishTime != null">
+        publish_time = #{update.publishTime},
+      </if>
+    </set>
+    <include refid="messageDO_query_segment"/>
+  </update>
+
+
+  <insert id="insertOrUpdate" useGeneratedKeys="true" keyProperty="id"
+    parameterType="io.milkt.onelab.organization.domain.MessageDO">
+    insert into message
+    (
+    <include refid="messageDO_sqlForInsert"/>
+    ,is_delete
+    )
+    values
+    (
+    <include refid="messageDO_columnsForInsert"/>
+    ,0
+    )
+    on duplicate key update
+    gmt_modified = now()
+    ,is_delete = 0
+    <if test="target != null">
+      ,target = #{target}
+    </if>
+    <if test="content != null">
+      ,content = #{content}
+    </if>
+    <if test="readTime != null">
+      ,read_time = #{readTime}
+    </if>
+    <if test="title != null">
+      ,title = #{title}
+    </if>
+    <if test="subtitle != null">
+      ,subtitle = #{subtitle}
+    </if>
+    <if test="status != null">
+      ,status = #{status}
+    </if>
+    <if test="source != null">
+      ,source = #{source}
+    </if>
+    <if test="publishTime != null">
+      ,publish_time = #{publishTime}
+    </if>
+  </insert>
+
+  <!-- Delete -->
+  <update id="delete">
+    update message
+    set is_delete = 1, gmt_modified = now()
+    <include refid="messageDO_query_segment"/>
+  </update>
+  <update id="deleteById">
+    update message
+    set is_delete = 1, gmt_modified = now()
+    where id = #{id}
+</update>
+
+
+  <!-- query class -->
+  <sql id="messageDO_groupBy">
+    <if test="groupBys != null and groupBys != ''">
+      group by
+      <foreach collection="groupBys" item="item" open="" separator="," close="">
+        #{item}
+      </foreach>
+    </if>
+  </sql>
+
+  <sql id="messageDO_orderby">
+    <if test="orderBys != null and orderBys != ''">
+      order by
+      <foreach collection="orderBys" item="item" open="" separator="," close="">
+        ${item.column} ${item.direction}
+      </foreach>
+    </if>
+  </sql>
+
+
+  <select id="query" resultMap="messageDOResult"
+    parameterType="io.milkt.onelab.organization.domain.MessageDO">
+    <include refid="messageDO_selector"/>
+    <include refid="messageDO_query_segment"/>
+    <include refid="messageDO_groupBy"/>
+    <include refid="messageDO_orderby"/>
+  </select>
+
+  <select id="query4Page" resultMap="messageDOResult"
+    parameterType="io.milkt.onelab.organization.domain.MessageDO">
+    <include refid="messageDO_selector"/>
+    <include refid="messageDO_query_segment"/>
+    <include refid="messageDO_groupBy"/>
+    <include refid="messageDO_orderby"/>
+    limit ${startRowForMysql}, ${pageSize}
+  </select>
+
+
+  <select id="count" resultType="java.lang.Long">
+    SELECT COUNT(1) FROM message
+    <include refid="messageDO_query_segment"/>
+  </select>
+
+  <select id="getById" resultMap="messageDOResult">
+    <include refid="messageDO_selector"/>
+    where id = #{id}
+    and is_delete = 0
+  </select>
+
+  <select id="getByIdForUpdate" resultMap="messageDOResult">
+    <include refid="messageDO_selector"/>
+    where id = #{id}
+    and is_delete = 0
+    for update
+  </select>
+
+  <select id="getUserIdLinkUserDB" resultMap="messageDOResult">
+    SELECT user_id as "target" from user.user_address as uad
+    LEFT JOIN user.user as u on uad.user_id = u.id
+    WHERE uad.city_code = #{adcode}
+    AND u.app_id = 4
+    AND is_delete = 0
+  </select>
+
+</mapper>

@@ -1,10 +1,12 @@
 package io.milkt.onelab.organization.api;
 
 
+import io.milkt.onelab.organization.entity.MessageSearchResult;
 import io.milkt.onelab.organization.entity.PageQueryEntity;
 import io.milkt.onelab.organization.entity.RequirementDetailEntity;
 import io.milkt.onelab.organization.entity.RequirementEntity;
 import io.milkt.onelab.organization.entity.RequirementSearchResult;
+import io.milkt.onelab.organization.enums.MessageStatus;
 import io.milkt.onelab.organization.enums.MotionStatus;
 import io.milkt.onelab.organization.enums.RecruitTimeLimitEnum;
 import io.milkt.onelab.organization.enums.RequirementStatus;
@@ -138,5 +140,21 @@ public interface RequirementHttpExportService {
       @ApiAutowired(AutowireableParameter.userid) long userId,
       @ApiParameter(required = true, name = "requirementId", desc = "需求id") long requirementId,
       @ApiParameter(required = true, name = "motionId", desc = "竞标id") long motionId
+  );
+
+  @HttpApi(name = "requirement.getMessageList", desc = "获取信息列表", security = SecurityType.UserLogin, owner = "leewind")
+  @DesignedErrorCode({})
+  public MessageSearchResult getMessageList(
+      @ApiAutowired(AutowireableParameter.appid) int appid,
+      @ApiAutowired(AutowireableParameter.userid) long userId,
+      @ApiParameter(required = false, name = "status", desc = "信息状态") MessageStatus status,
+      @ApiParameter(required = true, name = "page", desc = "页码查询实体")PageQueryEntity page
+  );
+
+  @HttpApi(name = "requirement.getUnreadNum", desc = "获取没有阅读的信息数量", security = SecurityType.UserLogin, owner = "leewind")
+  @DesignedErrorCode({})
+  public long getUnreadNum(
+      @ApiAutowired(AutowireableParameter.appid) int appid,
+      @ApiAutowired(AutowireableParameter.userid) long userId
   );
 }
