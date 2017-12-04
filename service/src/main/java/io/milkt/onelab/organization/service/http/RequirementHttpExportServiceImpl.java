@@ -682,4 +682,18 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
 
     return messageManager.count(conditions);
   }
+
+  @Override
+  public boolean readMessage(int appid, long userId, long messageId) {
+    MessageDO messageDO = messageManager.getById(messageId);
+    if (messageDO == null){
+      throw new ServiceRuntimeException(RequirementErrorCode.MESSAGE_NOT_EXIST);
+    }else if (userId != messageDO.getTarget()) {
+      throw new ServiceRuntimeException(RequirementErrorCode.USER_NOT_PERMITTED);
+    }else{
+      messageDO.setStatus(MessageStatus.READ.name());
+      messageDO.setReadTime(new Timestamp(System.currentTimeMillis()));
+      return messageManager.update(messageDO) > 0;
+    }
+  }
 }

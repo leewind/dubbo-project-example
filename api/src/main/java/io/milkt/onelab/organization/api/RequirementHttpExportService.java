@@ -157,4 +157,15 @@ public interface RequirementHttpExportService {
       @ApiAutowired(AutowireableParameter.appid) int appid,
       @ApiAutowired(AutowireableParameter.userid) long userId
   );
+
+  @HttpApi(name = "requirement.readMessage", desc = "已阅消息", security = SecurityType.UserLogin, owner = "leewind")
+  @DesignedErrorCode({
+      RequirementErrorCode._C_MESSAGE_NOT_EXIST,
+      RequirementErrorCode._C_USER_NOT_PERMITTED
+  })
+  public boolean readMessage(
+      @ApiAutowired(AutowireableParameter.appid) int appid,
+      @ApiAutowired(AutowireableParameter.userid) long userId,
+      @ApiParameter(required = true, name = "messageId", desc = "消息id") long messageId
+  );
 }
