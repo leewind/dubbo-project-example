@@ -116,7 +116,7 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
 
   @Override
   public long save(int appid, long userId, long labId, RequirementType type, String description,
-      RecruitTimeLimitEnum recruitTimeLimit,  int fee,
+      RecruitTimeLimitEnum recruitTimeLimit, int fee,
       TaskFinishLimitEnum taskFinishLimit, List<String> images) {
 
     AppType channel = AppType.getEnumByCode(appid);
@@ -161,7 +161,8 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
       try {
         requirementManager.insert(requirementDO);
       } catch (DataIntegrityViolationException e) {
-        throw new ServiceRuntimeException(RequirementErrorCode.REQUIREMENT_CREATE_ERROR, "任务创建失败", e);
+        throw new ServiceRuntimeException(RequirementErrorCode.REQUIREMENT_CREATE_ERROR, "任务创建失败",
+            e);
       }
 
       return requirementDO.getId();
@@ -252,6 +253,27 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
     requirementSearchResult.page = pageEntity;
 
     return requirementSearchResult;
+  }
+
+  @Override
+  public List<RequirementEntity> getSuccessList() {
+
+    RequirementDO factor = new RequirementDO();
+    factor.setStatus(RequirementStatus.FINISHED.name());
+
+    BaseQuery<RequirementDO> conditions = BaseQuery.getInstance(factor);
+    conditions.addOrderBy("task_finish_time", 0);
+    conditions.setPageSize(10);
+    conditions.setCurrentPage(1);
+    PageResult<RequirementDO> pageResult = requirementManager.query4Page(conditions);
+
+    List<RequirementEntity> requirements = new ArrayList<RequirementEntity>();
+
+    for (RequirementDO requirementDO : pageResult.getResult()) {
+      requirements.add(buildRequirementEntity(requirementDO));
+    }
+
+    return requirements;
   }
 
   @Override
@@ -367,9 +389,10 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
                   ? CommonVerifyStatus.APPLY
                   : CommonVerifyStatus.valueOf(userIdentificationInfo.verifyStatus.name());
 
-          List<SkillCertificationInfo> skillCertificationInfos = userHttpService.getSkillCerts(motionUserInfo.userId);
+          List<SkillCertificationInfo> skillCertificationInfos = userHttpService
+              .getSkillCerts(motionUserInfo.userId);
           List<String> skills = new ArrayList<String>();
-          for(SkillCertificationInfo skillCertificationInfo: skillCertificationInfos){
+          for (SkillCertificationInfo skillCertificationInfo : skillCertificationInfos) {
             skills.add(skillCertificationInfo.skillName);
           }
           motionEntity.skills = skills;
@@ -421,7 +444,8 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
     try {
       UserIdentificationInfo userIdentificationInfo = userLoginHttpService
           .getIndentifationInfo(userId);
-      if (VerifyStatus.valueOf(userIdentificationInfo.verifyStatus.name()) != VerifyStatus.SUCCESS) {
+      if (VerifyStatus.valueOf(userIdentificationInfo.verifyStatus.name())
+          != VerifyStatus.SUCCESS) {
         throw new ServiceRuntimeException(RequirementErrorCode.USER_NOT_PERMITTED, "用户没有审核通过无法申请");
       }
     } catch (ServiceException e) {
@@ -452,6 +476,37 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
   }
 
   @Override
+  public int withdraw(int appid, long userId, long requirementId) {
+    RequirementDO requirementDO = requirementManager.getById(requirementId);
+    if (requirementDO == null) {
+      throw new ServiceRuntimeException(RequirementErrorCode.REQUIREMENT_NOT_EXIST, "需求不存在");
+    } else if (requirementDO.getRecruitFinishTime().getTime() < System.currentTimeMillis() ||
+        RequirementStatus.valueOf(requirementDO.getStatus()) == RequirementStatus.CLOSE ||
+        RequirementStatus.valueOf(requirementDO.getStatus()) == RequirementStatus.FINISHED) {
+      throw new ServiceRuntimeException(RequirementErrorCode.MOTION_NOT_PERMISSION, "需求已关闭");
+    } else if (RequirementStatus.valueOf(requirementDO.getStatus())
+        != RequirementStatus.RECRUITING) {
+      throw new ServiceRuntimeException(RequirementErrorCode.REQUIREMENT_STATUS_LOCK, "需求状态已经锁定");
+    }
+
+    AppType channel = AppType.getEnumByCode(appid);
+    if (channel == null || channel == AppType.MAINTAINER) {
+      throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZATION_TYPE_ERROR,
+          "apptype不在接受的范围内");
+    }
+
+    OrganizationDO organizationDO = organizationManager.getById(requirementDO.getOrganizationId());
+    if (organizationDO == null) {
+      throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZAION_NOT_EXIST, "组织不存在");
+    } else if (organizationDO.getUserId() != userId) {
+      throw new ServiceRuntimeException(RequirementErrorCode.USER_NOT_PERMITTED, "用户没有操作权限");
+    }
+
+    requirementDO.setStatus(RequirementStatus.CLOSE.name());
+    return requirementManager.update(requirementDO);
+  }
+
+  @Override
   public boolean approve(int appid, long userId, long requirementId, long motionId) {
     RequirementDO requirementDO = requirementManager.getById(requirementId);
     if (requirementDO == null) {
@@ -469,9 +524,9 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
     }
 
     OrganizationDO organizationDO = organizationManager.getById(requirementDO.getOrganizationId());
-    if(organizationDO == null) {
+    if (organizationDO == null) {
       throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZAION_NOT_EXIST, "组织不存在");
-    }else if(organizationDO.getUserId() != userId){
+    } else if (organizationDO.getUserId() != userId) {
       throw new ServiceRuntimeException(RequirementErrorCode.USER_NOT_PERMITTED, "用户没有操作权限");
     }
 
@@ -491,10 +546,10 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
     BaseQuery<MotionDO> condition = BaseQuery.getInstance(factor);
     List<MotionDO> motionList = motionManager.query(condition);
 
-    for(MotionDO motion: motionList) {
-      if(motion.getId() == motionId){
+    for (MotionDO motion : motionList) {
+      if (motion.getId() == motionId) {
         motion.setStatus(MotionStatus.PROCESSING.name());
-      }else{
+      } else {
         motion.setStatus(MotionStatus.FAIL.name());
       }
       motionManager.update(motion);

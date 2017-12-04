@@ -11,16 +11,22 @@ import net.pocrd.annotation.Description;
 @Description("需求类型")
 public enum RequirementType {
 
-  @Description("水电维修")
-  PLUMBER,
-
-  @Description("家具维修")
+  @Description("实验室家具")
   FURNITURE,
 
-  @Description("化学品处理")
+  @Description("办公家具")
+  OFFICE_FURNITURE,
+
+  @Description("净化工程")
   TREATMENT,
 
-  @Description("工作服")
+  @Description("仪器/耗材")
   OVERALLS,
+
+  @Description("通风系统")
+  VENTILATION,
+
+  @Description("供气系统")
+  PLUMBER,
   ;
 }

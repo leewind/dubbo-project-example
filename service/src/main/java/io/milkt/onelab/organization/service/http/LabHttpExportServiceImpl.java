@@ -78,6 +78,7 @@ public class LabHttpExportServiceImpl implements LabHttpExportService {
       labDO.setPhone(phone);
       labDO.setType(type.name());
       labDO.setOrganizationId(organizationDO.getId());
+      labDO.setLevel(5);
 
       try {
         labManager.insertOrUpdate(labDO);

@@ -55,4 +55,8 @@ public class RequirementErrorCode extends AbstractReturnCode {
   public final static int _C_MOTION_NOT_EXIST = 8000120;
   public final static AbstractReturnCode MOTION_NOT_EXIST = new OrganizationErrorCode
       ("竞标不存在", _C_MOTION_NOT_EXIST);
+
+  public final static int _C_REQUIREMENT_STATUS_LOCK = 8000130;
+  public final static AbstractReturnCode REQUIREMENT_STATUS_LOCK = new OrganizationErrorCode
+      ("订单状态已经锁定", _C_REQUIREMENT_STATUS_LOCK);
 }

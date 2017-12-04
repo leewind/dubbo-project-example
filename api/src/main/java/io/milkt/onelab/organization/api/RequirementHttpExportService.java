@@ -3,8 +3,8 @@ package io.milkt.onelab.organization.api;
 
 import io.milkt.onelab.organization.entity.PageQueryEntity;
 import io.milkt.onelab.organization.entity.RequirementDetailEntity;
+import io.milkt.onelab.organization.entity.RequirementEntity;
 import io.milkt.onelab.organization.entity.RequirementSearchResult;
-import io.milkt.onelab.organization.enums.FeeRangeEnum;
 import io.milkt.onelab.organization.enums.MotionStatus;
 import io.milkt.onelab.organization.enums.RecruitTimeLimitEnum;
 import io.milkt.onelab.organization.enums.RequirementStatus;
@@ -69,6 +69,10 @@ public interface RequirementHttpExportService {
       @ApiParameter(required = true, name = "page", desc = "页码查询实体")PageQueryEntity page
   );
 
+  @HttpApi(name = "requirement.getSuccessList", desc = "获取最近的10条成功需求列表", security = SecurityType.None, owner = "leewind")
+  @DesignedErrorCode({})
+  public List<RequirementEntity> getSuccessList();
+
   @HttpApi(name = "requirement.getListByMotionStatus", desc = "通过用户的motion申请状态来获取需求列表", security = SecurityType.UserLogin, owner = "leewind")
   @DesignedErrorCode({})
   public RequirementSearchResult getListByMotionStatus(
@@ -93,7 +97,8 @@ public interface RequirementHttpExportService {
       RequirementErrorCode._C_NOT_REPECT_MOTION,
       RequirementErrorCode._C_MOTION_NOT_PERMISSION,
       RequirementErrorCode._C_PUBLISHER_INFO_ERROR,
-      RequirementErrorCode._C_USER_NOT_PERMITTED
+      RequirementErrorCode._C_USER_NOT_PERMITTED,
+      RequirementErrorCode._C_REQUIREMENT_STATUS_LOCK
   })
   public long apply(
       @ApiAutowired(AutowireableParameter.appid) int appid,
@@ -102,6 +107,21 @@ public interface RequirementHttpExportService {
       @ApiParameter(required = true, name = "mobile", desc = "手机号") String mobile,
       @ApiParameter(required = true, name = "expectedFee", desc = "期望费用")int expectedFee,
       @ApiParameter(required = false, name = "description", desc = "描述")String description
+  );
+
+  @HttpApi(name = "requirement.withdraw", desc = "取消需求单", security = SecurityType.UserLogin, owner = "leewind")
+  @DesignedErrorCode({
+      RequirementErrorCode._C_REQUIREMENT_NOT_EXIST,
+      RequirementErrorCode._C_ORGANIZATION_TYPE_ERROR,
+      RequirementErrorCode._C_NOT_REPECT_MOTION,
+      RequirementErrorCode._C_MOTION_NOT_PERMISSION,
+      RequirementErrorCode._C_PUBLISHER_INFO_ERROR,
+      RequirementErrorCode._C_USER_NOT_PERMITTED
+  })
+  public int withdraw(
+      @ApiAutowired(AutowireableParameter.appid) int appid,
+      @ApiAutowired(AutowireableParameter.userid) long userId,
+      @ApiParameter(required = true, name = "requirementId", desc = "需求id") long requirementId
   );
 
   @HttpApi(name = "requirement.approve", desc = "中标", security = SecurityType.UserLogin, owner = "leewind")
