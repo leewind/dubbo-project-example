@@ -34,7 +34,7 @@ public interface RequirementHttpExportService {
   @HttpApi(name = "requirement.save", desc = "保存requirement返回id", security = SecurityType.UserLogin, owner = "leewind")
   @DesignedErrorCode({
       RequirementErrorCode._C_ORGANIZATION_TYPE_ERROR,
-      RequirementErrorCode._C_ORGANIZAION_NOT_EXIST,
+      RequirementErrorCode._C_ORGANIZATION_NOT_EXIST,
       RequirementErrorCode._C_LAB_NOT_EXIST,
       RequirementErrorCode._C_LAB_NOT_PERMISSION,
       RequirementErrorCode._C_REQUIREMENT_CREATE_ERROR
@@ -55,12 +55,13 @@ public interface RequirementHttpExportService {
   @HttpApi(name = "requirement.getMyList", desc = "获取我的需求列表", security = SecurityType.UserLogin, owner = "leewind")
   @DesignedErrorCode({
       RequirementErrorCode._C_ORGANIZATION_TYPE_ERROR,
-      RequirementErrorCode._C_ORGANIZAION_NOT_EXIST
+      RequirementErrorCode._C_ORGANIZATION_NOT_EXIST
   })
   public RequirementSearchResult getMyList(
       @ApiAutowired(AutowireableParameter.appid) int appid,
       @ApiAutowired(AutowireableParameter.userid) long userId,
       @ApiParameter(required = false, name = "status", desc = "需求状态") RequirementStatus status,
+      @ApiParameter(required = false, name = "type", desc = "需求分类") RequirementType type,
       @ApiParameter(required = true, name = "page", desc = "页码查询实体")PageQueryEntity page
   );
 
@@ -131,7 +132,7 @@ public interface RequirementHttpExportService {
       RequirementErrorCode._C_REQUIREMENT_NOT_EXIST,
       RequirementErrorCode._C_MOTION_NOT_PERMISSION,
       RequirementErrorCode._C_ORGANIZATION_TYPE_ERROR,
-      RequirementErrorCode._C_ORGANIZAION_NOT_EXIST,
+      RequirementErrorCode._C_ORGANIZATION_NOT_EXIST,
       RequirementErrorCode._C_USER_NOT_PERMITTED,
       RequirementErrorCode._C_MOTION_NOT_EXIST
   })

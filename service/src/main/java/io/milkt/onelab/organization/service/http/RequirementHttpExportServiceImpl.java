@@ -130,13 +130,13 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
     AppType channel = AppType.getEnumByCode(appid);
     if (channel == null || channel == AppType.MAINTAINER) {
       throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZATION_TYPE_ERROR,
-          "apptype不在接受的范围内");
+          "该账号不能在该端使用");
     }
 
     List<OrganizationDO> results = queryOrganization(userId, channel);
     if (results.size() == 0) {
-      throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZAION_NOT_EXIST,
-          "organization不存在");
+      throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZATION_NOT_EXIST,
+          "请先做企业认证");
     } else {
       OrganizationDO organizationDO = results.get(0);
 
@@ -211,18 +211,18 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
 
   @Override
   public RequirementSearchResult getMyList(int appid, long userId, RequirementStatus status,
-      PageQueryEntity page) {
+      RequirementType type, PageQueryEntity page) {
 
     AppType channel = AppType.getEnumByCode(appid);
     if (channel == null || channel == AppType.MAINTAINER) {
       throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZATION_TYPE_ERROR,
-          "apptype不在接受的范围内");
+          "该账号不能在该端使用");
     }
 
     List<OrganizationDO> results = queryOrganization(userId, channel);
     if (results.size() == 0) {
-      throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZAION_NOT_EXIST,
-          "organization不存在");
+      throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZATION_NOT_EXIST,
+          "请先做企业认证");
     } else {
       OrganizationDO organizationDO = results.get(0);
 
@@ -230,6 +230,10 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
       factor.setOrganizationId(organizationDO.getId());
       if (status != null) {
         factor.setStatus(status.name());
+      }
+
+      if (type != null) {
+        factor.setType(type.name());
       }
 
       BaseQuery<RequirementDO> conditions = BaseQuery.getInstance(factor);
@@ -386,7 +390,7 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
 
       OrganizationDO organizationDO = organizationManager.getById(lab.getOrganizationId());
       if (organizationDO == null) {
-        throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZAION_NOT_EXIST, "组织不存在");
+        throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZATION_NOT_EXIST, "请先做企业认证");
       }
       labEntity.commonVerifyStatus = CommonVerifyStatus.valueOf(organizationDO.getVerifyStatus());
 
@@ -478,7 +482,7 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
     AppType channel = AppType.getEnumByCode(appid);
     if (channel == null || channel == AppType.PUBLISHER) {
       throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZATION_TYPE_ERROR,
-          "apptype不在接受的范围内");
+          "该账号不能在该端使用");
     }
 
     try {
@@ -550,12 +554,12 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
     AppType channel = AppType.getEnumByCode(appid);
     if (channel == null || channel == AppType.MAINTAINER) {
       throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZATION_TYPE_ERROR,
-          "apptype不在接受的范围内");
+          "该账号不能在该端使用");
     }
 
     OrganizationDO organizationDO = organizationManager.getById(requirementDO.getOrganizationId());
     if (organizationDO == null) {
-      throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZAION_NOT_EXIST, "组织不存在");
+      throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZATION_NOT_EXIST, "请先做企业认证");
     } else if (organizationDO.getUserId() != userId) {
       throw new ServiceRuntimeException(RequirementErrorCode.USER_NOT_PERMITTED, "用户没有操作权限");
     }
@@ -578,12 +582,12 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
     AppType channel = AppType.getEnumByCode(appid);
     if (channel == null || channel == AppType.MAINTAINER) {
       throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZATION_TYPE_ERROR,
-          "apptype不在接受的范围内");
+          "该账号不能在该端使用");
     }
 
     OrganizationDO organizationDO = organizationManager.getById(requirementDO.getOrganizationId());
     if (organizationDO == null) {
-      throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZAION_NOT_EXIST, "组织不存在");
+      throw new ServiceRuntimeException(RequirementErrorCode.ORGANIZATION_NOT_EXIST, "请先做企业认证");
     } else if (organizationDO.getUserId() != userId) {
       throw new ServiceRuntimeException(RequirementErrorCode.USER_NOT_PERMITTED, "用户没有操作权限");
     }
@@ -607,7 +611,30 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
     for (MotionDO motion : motionList) {
       if (motion.getId() == motionId) {
         motion.setStatus(MotionStatus.PROCESSING.name());
+
+        MessageDO message4Applier = new MessageDO();
+        message4Applier.setTarget(motion.getUserId());
+        message4Applier.setStatus(MessageStatus.UNREAD.name());
+        message4Applier.setTitle("您的应聘通过了");
+        message4Applier.setSubtitle("您的应聘通过的甲方审核");
+        message4Applier.setSource("REQUIREMENT");
+        message4Applier.setPublishTime(new Timestamp(System.currentTimeMillis()));
+        message4Applier
+            .setContent("您应聘的了一条维修招募信息：" + requirementDO.getDescription() + "，通过了对方审核");
+        messageManager.insert(message4Applier);
+
       } else {
+        MessageDO message4Applier = new MessageDO();
+        message4Applier.setTarget(motion.getUserId());
+        message4Applier.setStatus(MessageStatus.UNREAD.name());
+        message4Applier.setTitle("很遗憾，您的应聘没有被通过");
+        message4Applier.setSubtitle("您的应聘没有通过甲方审核");
+        message4Applier.setSource("REQUIREMENT");
+        message4Applier.setPublishTime(new Timestamp(System.currentTimeMillis()));
+        message4Applier
+            .setContent("您应聘的了一条维修招募信息：" + requirementDO.getDescription() + "，没有通过对方审核");
+        messageManager.insert(message4Applier);
+
         motion.setStatus(MotionStatus.FAIL.name());
       }
       motionManager.update(motion);
