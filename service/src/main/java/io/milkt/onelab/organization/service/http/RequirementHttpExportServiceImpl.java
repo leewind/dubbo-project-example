@@ -488,7 +488,7 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
     try {
       UserIdentificationInfo userIdentificationInfo = userLoginHttpService
           .getIndentifationInfo(userId);
-      if (VerifyStatus.valueOf(userIdentificationInfo.verifyStatus.name())
+      if (userIdentificationInfo == null || VerifyStatus.valueOf(userIdentificationInfo.verifyStatus.name())
           != VerifyStatus.SUCCESS) {
         throw new ServiceRuntimeException(RequirementErrorCode.USER_NOT_PERMITTED, "用户没有审核通过无法申请");
       }
