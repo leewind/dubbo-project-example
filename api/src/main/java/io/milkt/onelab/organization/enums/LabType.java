@@ -19,6 +19,9 @@ public enum  LabType {
 
   @Description("物理实验室")
   PHYSICAL,
+
+  @Description("其他实验室")
+  OTHER,
   ;
 
 }

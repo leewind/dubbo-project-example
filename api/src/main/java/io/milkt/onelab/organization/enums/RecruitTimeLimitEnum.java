@@ -19,6 +19,9 @@ public enum RecruitTimeLimitEnum {
 
   @Description("72小时")
   SENVENTY_TWO_HOURS,
+
+  @Description("7天")
+  SEVEN_DAY,
   ;
 
 }

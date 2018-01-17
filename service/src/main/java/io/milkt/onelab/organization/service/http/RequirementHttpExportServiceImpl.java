@@ -88,13 +88,15 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
 
   private Timestamp getRecruitFinishTime(RecruitTimeLimitEnum recruitTimeLimitEnum) {
     switch (recruitTimeLimitEnum) {
-      default:
-      case TWENTY_FOUR_HOURS:
-        return new Timestamp(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
       case FOURTY_EIGHT_HOURS:
         return new Timestamp(System.currentTimeMillis() + 48 * 60 * 60 * 1000);
       case SENVENTY_TWO_HOURS:
         return new Timestamp(System.currentTimeMillis() + 72 * 60 * 60 * 1000);
+      case SEVEN_DAY:
+        return new Timestamp(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000);
+      case TWENTY_FOUR_HOURS:
+      default:
+        return new Timestamp(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
     }
   }
 
@@ -488,7 +490,8 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
     try {
       UserIdentificationInfo userIdentificationInfo = userLoginHttpService
           .getIndentifationInfo(userId);
-      if (userIdentificationInfo == null || VerifyStatus.valueOf(userIdentificationInfo.verifyStatus.name())
+      if (userIdentificationInfo == null
+          || VerifyStatus.valueOf(userIdentificationInfo.verifyStatus.name())
           != VerifyStatus.SUCCESS) {
         throw new ServiceRuntimeException(RequirementErrorCode.USER_NOT_PERMITTED, "用户没有审核通过无法申请");
       }
@@ -643,7 +646,7 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
     return true;
   }
 
-  private MessageEntity buildMessageEntity(MessageDO messageDO){
+  private MessageEntity buildMessageEntity(MessageDO messageDO) {
     MessageEntity messageEntity = new MessageEntity();
 
     messageEntity.content = messageDO.getContent();
@@ -713,11 +716,11 @@ public class RequirementHttpExportServiceImpl implements RequirementHttpExportSe
   @Override
   public boolean readMessage(int appid, long userId, long messageId) {
     MessageDO messageDO = messageManager.getById(messageId);
-    if (messageDO == null){
+    if (messageDO == null) {
       throw new ServiceRuntimeException(RequirementErrorCode.MESSAGE_NOT_EXIST);
-    }else if (userId != messageDO.getTarget()) {
+    } else if (userId != messageDO.getTarget()) {
       throw new ServiceRuntimeException(RequirementErrorCode.USER_NOT_PERMITTED);
-    }else{
+    } else {
       messageDO.setStatus(MessageStatus.READ.name());
       messageDO.setReadTime(new Timestamp(System.currentTimeMillis()));
       return messageManager.update(messageDO) > 0;
